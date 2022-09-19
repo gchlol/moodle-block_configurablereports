@@ -90,7 +90,7 @@ class plugin_startendtime extends plugin_base {
     public function print_filter(&$mform) {
         global $DB, $CFG;
         $mform->addElement('date_time_selector', 'filter_starttime', get_string('starttime', 'block_configurable_reports'));
-        $mform->setDefault('filter_starttime', time() - 3600 * 24);
+        $mform->setDefault('filter_starttime', 1); // GCHLOL: Set start date to 1970.
         $mform->addElement('date_time_selector', 'filter_endtime', get_string('endtime', 'block_configurable_reports'));
         $mform->setDefault('filter_endtime', time() + 3600 * 24);
     }

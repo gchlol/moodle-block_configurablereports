@@ -57,7 +57,7 @@ class block_configurable_reports extends block_list {
      * @return boolean
      **/
     public function applicable_formats() {
-        return array('site' => true, 'course' => true, 'my' => true);
+        return array('all' => true); // GCHLOL: Allow reports to display at all contexts.
     }
 
     /**

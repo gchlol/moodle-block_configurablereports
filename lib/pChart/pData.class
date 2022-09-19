@@ -50,7 +50,7 @@
    var $Data;
    var $DataDescription;
 
-   function __construct()
+   function pData()
     {
      $this->Data                           = [];
      $this->DataDescription                = [];
@@ -72,7 +72,7 @@
          $buffer = fgets($handle, 4096);
          $buffer = str_replace(chr(10),"",$buffer);
          $buffer = str_replace(chr(13),"",$buffer);
-         $Values = explode($Delimiter,$buffer);
+         $Values = split($Delimiter,$buffer);
 
          if ( $buffer != "" )
           {

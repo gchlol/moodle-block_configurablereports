@@ -14,6 +14,14 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+// GCHLOL
+$string['fsearchsession'] = 'Face to Face Search Session ID';
+$string['fsearchuser'] = 'Search User Name Details';
+$string['division'] = 'Filter by Division';
+$string['department'] = 'Filter by Department';
+$string['unit'] = 'Filter by Unit';
+$string['stream'] = 'Filter by Stream';
+
 $string['pluginname'] = "Configurable Reports";
 $string['blockname'] = "Configurable Reports";
 $string['report_courses'] = "Courses report";
