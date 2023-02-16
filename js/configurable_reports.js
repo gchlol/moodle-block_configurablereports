@@ -1,34 +1,8 @@
-/* TODO needs to be converted to AMD and converted to vanila JS */
-
-var editor_querysql = null;
-var editor_remotequerysql = null;
-
 M.block_configurable_reports = {
 
 
     init: function(Y) {
         this.Y = Y;
-
-        // Documentation can be found @ http://codemirror.net/
-        editor_querysql = CodeMirror.fromTextArea(document.getElementById('id_querysql'), {
-            mode: "text/x-mysql",
-            rtlMoveVisually: true,
-            indentWithTabs: true,
-            smartIndent: true,
-            lineNumbers: true,
-            matchBrackets: true,
-            autofocus: true,
-        });
-
-        editor_remotequerysql = CodeMirror.fromTextArea(document.getElementById('id_remotequerysql'), {
-            mode: "text/x-mysql",
-            rtlMoveVisually: true,
-            indentWithTabs: true,
-            smartIndent: true,
-            lineNumbers: true,
-            matchBrackets: true,
-        });
-
     },
 
     loadReportCategories: function(Y) {
@@ -150,7 +124,12 @@ M.block_configurable_reports = {
                     textarea_reportsincategory.set('value', response);
 
                     // Use codemirror editor.
-                    editor_remotequerysql.setValue(response);
+                    var remoteQueryTextarea = document.getElementById('id_remotequerysql');
+                    var remoteQueryEditor = remoteQueryTextarea.parentElement.querySelector('.CodeMirror').CodeMirror;
+
+                    if (remoteQueryEditor !== undefined) {
+                        remoteQueryEditor.setValue(response);
+                    }
                 },
                 failure: function(id, o) {
                     if (o.statusText != 'abort') {
