@@ -1,6 +1,3 @@
-var editor_querysql = null;
-var editor_remotequerysql = null;
-
 M.block_configurable_reports = {
 
     sesskey: null,
@@ -8,28 +5,6 @@ M.block_configurable_reports = {
     init: function(Y, sesskey) {
         this.Y = Y;
         this.sesskey = sesskey;
-
-        // Documentation can be found @ http://codemirror.net/
-        editor_querysql = CodeMirror.fromTextArea(document.getElementById('id_querysql'), {
-            mode: "text/x-mysql",
-            rtlMoveVisually: true,
-            indentWithTabs: true,
-            smartIndent: true,
-            lineNumbers: true,
-            matchBrackets : true,
-            autofocus: true,
-            });
-
-        editor_remotequerysql = CodeMirror.fromTextArea(document.getElementById('id_remotequerysql'), {
-            mode: "text/x-mysql",
-            rtlMoveVisually: true,
-            indentWithTabs: true,
-            smartIndent: true,
-            lineNumbers: true,
-            matchBrackets : true,
-        //    autofocus: true
-        });
-
     },
 
     loadReportCategories: function(Y, sesskey) {
@@ -164,7 +139,13 @@ M.block_configurable_reports = {
                     textarea_reportsincategory.set('value', response);
 
                     // Use codemirror editor.
-                    editor_remotequerysql.setValue(response);
+                    var remoteQueryTextarea = document.getElementById('id_remotequerysql');
+                    var remoteQueryEditor = remoteQueryTextarea.parentElement.querySelector('.CodeMirror').CodeMirror;
+
+                    if (remoteQueryEditor !== undefined) {
+                        remoteQueryEditor.setValue(response);
+                    }
+
                     /*
                     var list = Y.Node.create('<select>');
                     for(var prop in response) {
