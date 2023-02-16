@@ -89,21 +89,17 @@ M.block_configurable_reports = {
             on: {
                 success: function(id, o) {
                     var response = Y.JSON.parse(o.responseText);
-                    var list = Y.Node.create('<select>');
+                    select_reportsincategory.get('childNodes').remove();
                     option = Y.Node.create('<option value="-1">Choose...</option>');
-                    list.appendChild(option);
+                    select_reportsincategory.appendChild(option);
 
                     for(var prop in response) {
                         if (response.hasOwnProperty(prop)) {
                             option = Y.Node.create('<option value='+response[prop]["fullname"]+'>'+response[prop]["name"]+'</option>');
-                            list.appendChild(option);
+                            select_reportsincategory.appendChild(option);
                         }
                     }
                     select_reportsincategory.setStyle('visibility', 'visible');
-                    list.setAttribute('id','id_reportsincategory');
-                    list.setAttribute('name','reportsincategory');
-                    list.setAttribute('onchange','M.block_configurable_reports.onchange_reportsincategory(this,"'+this.sesskey+'")');
-                    select_reportsincategory.replace(list);
                 },
                 failure: function(id, o) {
                     if (o.statusText != 'abort') {
