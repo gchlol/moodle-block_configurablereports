@@ -22,6 +22,8 @@
  * @date: 2009
  */
 
+use block_configurable_reports\github;
+
 define('AJAX_SCRIPT', true);
 require(dirname(dirname(dirname(__FILE__))).'/config.php');
 require_once($CFG->libdir . '/filelib.php');
@@ -33,10 +35,12 @@ if (!$userandrepo = get_config('block_configurable_reports', 'sharedsqlrepositor
     die;
 }
 
-
-$github = new \block_configurable_reports\github;
+$github = new github;
 $github->set_repo($userandrepo);
-$content = $github->get('/master/'.$reportname);
-list($subject, $description, $sql) = explode('###', $content);
 
-echo json_encode($sql);
+$raw_response = $github->get("/contents/$reportname");
+$response = json_decode($raw_response);
+$content = base64_decode(str_replace("\n", '', $response->content));
+[ $subject, $description, $sql_content ] = explode('###', $content);
+
+echo json_encode(trim($sql_content));
