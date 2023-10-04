@@ -52,7 +52,7 @@ M.block_configurable_reports = {
 
                     for (var prop in response) {
                         if (response.hasOwnProperty(prop)) {
-                            option = Y.Node.create('<option value=' + response[prop]["git_url"] + '>' + response[prop]["name"] + '</option>');
+                            option = Y.Node.create('<option value=' + encodeURIComponent(response[prop]["path"]) + '>' + response[prop]["name"] + '</option>');
                             select_reportnames.appendChild(option);
                         }
                     }
@@ -68,7 +68,7 @@ M.block_configurable_reports = {
         var Y = this.Y;
 
         var path = select_element[select_element.selectedIndex].value;
-        location.href = location.href + "&importurl=" + encodeURIComponent(path);
+        location.href = location.href + "&importpath=" + encodeURIComponent(path);
     },
 
     onchange_reportcategories: function(select_element) {
