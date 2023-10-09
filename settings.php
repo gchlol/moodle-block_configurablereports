@@ -38,6 +38,13 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configtext('block_configurable_reports/sharedsqlrepository', get_string('sharedsqlrepository', 'block_configurable_reports'),
         get_string('sharedsqlrepositoryinfo', 'block_configurable_reports'), 'jleyva/moodle-custom_sql_report_queries', PARAM_URL, 40));
 
+    $settings->add(new admin_setting_configpasswordunmask(
+        'block_configurable_reports/repositorytoken',
+        get_string('repositorytoken', 'block_configurable_reports'),
+        get_string('repositorytokeninfo', 'block_configurable_reports'),
+        ''
+    ));
+
     $settings->add(new admin_setting_configcheckbox('block_configurable_reports/sqlsyntaxhighlight', get_string('sqlsyntaxhighlight', 'block_configurable_reports'),
         get_string('sqlsyntaxhighlightinfo', 'block_configurable_reports'), 1));
 

@@ -22,12 +22,15 @@
  * @date: 2009
  */
 
+use block_configurable_reports\github;
+
 require_once("../../config.php");
 require_once($CFG->dirroot."/blocks/configurable_reports/locallib.php");
 require_once('import_form.php');
 
 $courseid = optional_param('courseid', SITEID, PARAM_INT);
 $importurl = optional_param('importurl', '', PARAM_RAW);
+$import_path = optional_param('importpath', '', PARAM_RAW);
 
 if (! $course = $DB->get_record("course", array('id' => $courseid)) ) {
     print_error("No such course id");
@@ -65,6 +68,32 @@ if ($importurl) {
                     get_string('reportcreated', 'block_configurable_reports'));
     } else {
         print_error('errorimporting');
+    }
+}
+
+if ($import_path) {
+    $import_repo = get_config('block_configurable_reports', 'crrepository');
+
+    if ($import_repo) {
+        $github = new github();
+        $github->set_repo($import_repo);
+
+        $raw_response = $github->get("/contents/$import_path");
+        $response = json_decode($raw_response);
+        $xml = base64_decode($response->content);
+
+        if (cr_import_xml($xml, $course)) {
+            // Exit point
+            redirect(
+                new moodle_url(
+                    '/blocks/configurable_reports/managereport.php',
+                    [ 'courseid' => $course->id ]
+                ),
+                get_string('reportcreated', 'block_configurable_reports')
+            );
+        }
+
+        throw new moodle_exception('errorimporting');
     }
 }
 

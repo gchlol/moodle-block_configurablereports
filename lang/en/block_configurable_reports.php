@@ -456,6 +456,8 @@ $string['executeat'] = 'Execute at';
 $string['executeatinfo'] = 'Moodle CRON will run scheduled SQL queries after selected time. Once in 24h';
 $string['sharedsqlrepository'] = 'Shared sql repository';
 $string['sharedsqlrepositoryinfo'] = 'Name of GitHub account owner + slash + repository name';
+$string['repositorytoken'] = 'GitHub Access Token';
+$string['repositorytokeninfo'] = 'Optional access token to include with each request. This token requires the Contents Read-only permission at a minimum. See <a target="_blank" href="https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens">Personal Access Token Docs</a>.';
 $string['sqlsyntaxhighlight'] = 'Highlight SQL syntax';
 $string['sqlsyntaxhighlightinfo'] = 'Highlight SQL syntax in code editor (CodeMirror JS library)';
 $string['datatables'] = 'Enable DataTables JS library';
