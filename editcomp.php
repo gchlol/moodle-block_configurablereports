@@ -203,10 +203,14 @@ if ($compclass->plugins) {
     print_string('add');
     echo ': &nbsp;';
 
-    $attributes = ['id' => 'menuplugin'];
+    $attributes = [
+        'id' => 'menuplugin',
+        'data-id' => $id,
+        'data-comp' => $comp,
+        'onchange' => "M.block_configurable_reports.onchange_menuplugin(this)",
+    ];
 
     echo \html_writer::select($optionsplugins, 'plugin', '', ['' => get_string('choose')], $attributes);
-    $OUTPUT->add_action_handler(new component_action('change', 'menuplugin', ['url' => "editplugin.php?id=".$id."&comp=".$comp."&pname="]), 'menuplugin');
     echo '</p>';
     echo '</div>';
 }
