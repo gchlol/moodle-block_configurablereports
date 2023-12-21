@@ -170,10 +170,12 @@ M.block_configurable_reports = {
                 }
             }
         });
+    },
+
+    onchange_menuplugin: function(selectElement) {
+        const id = selectElement.dataset.id;
+        const comp = selectElement.dataset.comp;
+
+        location.href = `editplugin.php?id=${id}&comp=${comp}&pname=${selectElement.value}`;
     }
 }
-
-function menuplugin(event,args) {
-    location.href = args.url+document.getElementById('menuplugin').value;
-}
-
