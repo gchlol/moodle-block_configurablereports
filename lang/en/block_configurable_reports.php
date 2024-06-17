@@ -15,6 +15,11 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 // GCHLOL
+$string['orgunit'] = 'Organisation Unit';
+$string['filterorgunit'] = 'Filter organisation units';
+$string['filterorgunit_summary'] = 'Filter by Organisation Unit';
+$string['filterorgunit_nohierarchy'] = 'Unit hierarchy not found';
+$string['filterorgunit_nolevels'] = 'No units found';
 $string['fsearchsession'] = 'Face to Face Search Session ID';
 $string['fsearchuser'] = 'Search User Name Details';
 $string['division'] = 'Filter by Division';
