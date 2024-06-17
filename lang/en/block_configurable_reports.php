@@ -31,6 +31,14 @@ Use '%%FILTER_ORGFACILITY:table.path%%'
 ";
 $string['filterorgfacility_nohierarchy'] = 'Facility hierarchy not found';
 $string['filterorgfacility_nolevels'] = 'No facilities found';
+$string['orgjobcode'] = 'Organisation Job Code';
+$string['filterorgjobcode_name'] = 'Filter organisation job codes';
+$string['filterorgjobcode_summary'] = "
+Filter by Organisation Job Code<br>
+Use '%%FILTER_ORGJOBCODE:table.path%%'
+";
+$string['filterorgjobcode_nohierarchy'] = 'Job Code hierarchy not found';
+$string['filterorgjobcode_nolevels'] = 'No job codes found';
 $string['fsearchsession'] = 'Face to Face Search Session ID';
 $string['fsearchuser'] = 'Search User Name Details';
 $string['division'] = 'Filter by Division';
