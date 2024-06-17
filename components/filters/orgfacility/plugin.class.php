@@ -3,7 +3,7 @@
 use block_configurable_reports\local\plugin\org_filter_base;
 
 /** @noinspection PhpUnused */
-class plugin_orgunit extends org_filter_base {
+class plugin_orgfacility extends org_filter_base {
 
     /**
      * @inheritDoc
@@ -18,13 +18,13 @@ class plugin_orgunit extends org_filter_base {
      * @inheritDoc
      */
     protected static function get_name(): string {
-        return 'orgunit';
+        return 'orgfacility';
     }
 
     /**
      * @inheritDoc
      */
     public function print_filter(MoodleQuickForm $mform, stdClass $data): void {
-        static::add_level_selector($mform, 'unit');
+        parent::add_level_selector($mform, 'facility');
     }
 }

@@ -16,10 +16,15 @@
 
 // GCHLOL
 $string['orgunit'] = 'Organisation Unit';
-$string['filterorgunit'] = 'Filter organisation units';
+$string['filterorgunit_name'] = 'Filter organisation units';
 $string['filterorgunit_summary'] = 'Filter by Organisation Unit';
 $string['filterorgunit_nohierarchy'] = 'Unit hierarchy not found';
 $string['filterorgunit_nolevels'] = 'No units found';
+$string['orgfacility'] = 'Organisation Facility';
+$string['filterorgfacility_name'] = 'Filter organisation facilities';
+$string['filterorgfacility_summary'] = 'Filter by Organisation Facility';
+$string['filterorgfacility_nohierarchy'] = 'Facility hierarchy not found';
+$string['filterorgfacility_nolevels'] = 'No facilities found';
 $string['fsearchsession'] = 'Face to Face Search Session ID';
 $string['fsearchuser'] = 'Search User Name Details';
 $string['division'] = 'Filter by Division';
