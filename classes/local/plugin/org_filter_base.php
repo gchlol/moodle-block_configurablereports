@@ -67,7 +67,7 @@ abstract class org_filter_base extends plugin_base {
      * @throws dml_exception
      */
     public function execute($final_elements, stdClass $data) {
-        $filter_value = self::get_form_value();
+        $filter_value = self::get_filter_value();
         if (empty($filter_value)) {
             return $final_elements;
         }
@@ -168,6 +168,45 @@ abstract class org_filter_base extends plugin_base {
     }
 
     /**
+     * Get the filter value from submitted data.
+     *
+     * @return int[] Filter level IDs.
+     * @throws coding_exception
+     * @throws dml_exception
+     */
+    protected static function get_filter_value(): array {
+        global $DB;
+
+        $form_value = self::get_form_value();
+        if (empty($form_value)) {
+            return [];
+        }
+
+        $include_children = optional_param(static::get_identifier() . '_include_children', false, PARAM_BOOL);
+        if (!$include_children) {
+            return $form_value;
+        }
+
+        [ $levels_sql, $levels_params ] = $DB->get_in_or_equal($form_value);
+        $levels = level::get_records_select(
+            "id $levels_sql",
+            $levels_params
+        );
+
+        $level_ids = [];
+        foreach ($levels as $level) {
+            $level_ids[] = $level->get('id');
+
+            $child_levels = $level->get_children();
+            foreach ($child_levels as $child_level) {
+                $level_ids[] = $child_level->get('id');
+            }
+        }
+
+        return $level_ids;
+    }
+
+    /**
      * Get submitted filter form values.
      *
      * @return int[] Filter form values.
@@ -192,10 +231,11 @@ abstract class org_filter_base extends plugin_base {
      * @param MoodleQuickForm $mform Form to add the selector to.
      * @param string $hierarchy_idnumber Target hierarchy ID number.
      * @param int|null $depth Fixed level depth to fetch from. If null, all levels are fetched.
+     * @param bool|null $include_children Optional override for including child levels. If null, option is added to the form.
      * @return void
      * @throws coding_exception
      */
-    protected static function add_level_selector(MoodleQuickForm $mform, string $hierarchy_idnumber, ?int $depth = null): void {
+    protected static function add_level_selector(MoodleQuickForm $mform, string $hierarchy_idnumber, ?int $depth = null, ?bool $include_children = null): void {
         $hierarchy = hierarchy::get_record([ 'idnumber' => $hierarchy_idnumber ]);
         if (!$hierarchy) {
             $mform->addElement(
@@ -231,6 +271,25 @@ abstract class org_filter_base extends plugin_base {
             static::get_string('name'),
             $level_options,
             [ 'multiple' => true ]
+        );
+
+        $include_children_identifier = static::get_identifier() . '_include_children';
+        if ($include_children !== null) {
+            $mform->addElement(
+                'hidden',
+                $include_children_identifier,
+                $include_children
+            );
+            $mform->setType($include_children_identifier, PARAM_BOOL);
+
+            return;
+        }
+
+        $mform->addElement(
+            'advcheckbox',
+            $include_children_identifier,
+            '',
+            static::get_string('includechildren')
         );
     }
 

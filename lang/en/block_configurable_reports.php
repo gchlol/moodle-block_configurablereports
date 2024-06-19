@@ -21,6 +21,7 @@ $string['filterorgcostcentre_summary'] = "
 Filter by Organisation Cost Centre<br>
 Use '%%FILTER_ORGCOSTCENTRE:table.path%%'
 ";
+$string['filterorgcostcentre_includechildren'] = 'Include child cost centres';
 $string['filterorgcostcentre_nohierarchy'] = 'Paypoint hierarchy not found';
 $string['filterorgcostcentre_nolevels'] = 'No cost centres found';
 $string['orgdivision'] = 'Organisation Division';
@@ -37,6 +38,7 @@ $string['filterorgemptype_summary'] = "
 Filter by Organisation Employee Type<br>
 Use '%%FILTER_ORGEMPTYPE:table.path%%'
 ";
+$string['filterorgemptype_includechildren'] = 'Include child employee types';
 $string['filterorgemptype_nohierarchy'] = 'Employee Type hierarchy not found';
 $string['filterorgemptype_nolevels'] = 'No employee types found';
 $string['orgfacility'] = 'Organisation Facility';
@@ -45,6 +47,7 @@ $string['filterorgfacility_summary'] = "
 Filter by Organisation Facility<br>
 Use '%%FILTER_ORGFACILITY:table.path%%'
 ";
+$string['filterorgfacility_includechildren'] = 'Include child facilities';
 $string['filterorgfacility_nohierarchy'] = 'Facility hierarchy not found';
 $string['filterorgfacility_nolevels'] = 'No facilities found';
 $string['orgjobcode'] = 'Organisation Job Code';
@@ -53,6 +56,7 @@ $string['filterorgjobcode_summary'] = "
 Filter by Organisation Job Code<br>
 Use '%%FILTER_ORGJOBCODE:table.path%%'
 ";
+$string['filterorgjobcode_includechildren'] = 'Include child job codes';
 $string['filterorgjobcode_nohierarchy'] = 'Job Code hierarchy not found';
 $string['filterorgjobcode_nolevels'] = 'No job codes found';
 $string['orgpaypoint'] = 'Organisation Paypoint';
@@ -61,6 +65,7 @@ $string['filterorgpaypoint_summary'] = "
 Filter by Organisation Paypoint<br>
 Use '%%FILTER_ORGPAYPOINT:table.path%%'
 ";
+$string['filterorgpaypoint_includechildren'] = 'Include child paypoints';
 $string['filterorgpaypoint_nohierarchy'] = 'Paypoint hierarchy not found';
 $string['filterorgpaypoint_nolevels'] = 'No paypoints found';
 $string['orgstream'] = 'Organisation Stream';
@@ -77,6 +82,7 @@ $string['filterorgunit_summary'] = "
 Filter by Organisation Unit<br>
 Use '%%FILTER_ORGUNIT:table.path%%'
 ";
+$string['filterorgunit_includechildren'] = 'Include child units';
 $string['filterorgunit_nohierarchy'] = 'Unit hierarchy not found';
 $string['filterorgunit_nolevels'] = 'No units found';
 $string['fsearchsession'] = 'Face to Face Search Session ID';
