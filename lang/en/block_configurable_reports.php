@@ -47,6 +47,14 @@ Use '%%FILTER_ORGJOBCODE:table.path%%'
 ";
 $string['filterorgjobcode_nohierarchy'] = 'Job Code hierarchy not found';
 $string['filterorgjobcode_nolevels'] = 'No job codes found';
+$string['orgpaypoint'] = 'Organisation Paypoint';
+$string['filterorgpaypoint_name'] = 'Filter organisation paypoints';
+$string['filterorgpaypoint_summary'] = "
+Filter by Organisation Paypoint<br>
+Use '%%FILTER_ORGPAYPOINT:table.path%%'
+";
+$string['filterorgpaypoint_nohierarchy'] = 'Paypoint hierarchy not found';
+$string['filterorgpaypoint_nolevels'] = 'No paypoints found';
 $string['orgstream'] = 'Organisation Stream';
 $string['filterorgstream_name'] = 'Filter organisation streams';
 $string['filterorgstream_summary'] = "
