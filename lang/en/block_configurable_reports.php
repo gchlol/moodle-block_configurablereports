@@ -18,7 +18,7 @@
 $string['orgcostcentre'] = 'Organisation Cost Centre';
 $string['filterorgcostcentre_name'] = 'Filter organisation cost centres';
 $string['filterorgcostcentre_summary'] = "
-Filter by Organisation Division<br>
+Filter by Organisation Cost Centre<br>
 Use '%%FILTER_ORGCOSTCENTRE:table.path%%'
 ";
 $string['filterorgcostcentre_nohierarchy'] = 'Paypoint hierarchy not found';
@@ -58,7 +58,7 @@ $string['filterorgpaypoint_nolevels'] = 'No paypoints found';
 $string['orgstream'] = 'Organisation Stream';
 $string['filterorgstream_name'] = 'Filter organisation streams';
 $string['filterorgstream_summary'] = "
-Filter by Organisation Division<br>
+Filter by Organisation Stream<br>
 Use '%%FILTER_ORGSTREAM:table.path%%'
 ";
 $string['filterorgstream_nohierarchy'] = 'Cost Centre hierarchy not found';
