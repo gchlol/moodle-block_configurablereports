@@ -15,6 +15,14 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 // GCHLOL
+$string['orgdivision'] = 'Organisation Division';
+$string['filterorgdivision_name'] = 'Filter organisation divisions';
+$string['filterorgdivision_summary'] = "
+Filter by Organisation Division<br>
+Use '%%FILTER_ORGDIVISION:table.path%%'
+";
+$string['filterorgdivision_nohierarchy'] = 'Paypoint hierarchy not found';
+$string['filterorgdivision_nolevels'] = 'No divisions found';
 $string['orgunit'] = 'Organisation Unit';
 $string['filterorgunit_name'] = 'Filter organisation units';
 $string['filterorgunit_summary'] = "

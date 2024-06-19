@@ -191,10 +191,11 @@ abstract class org_filter_base extends plugin_base {
      *
      * @param MoodleQuickForm $mform Form to add the selector to.
      * @param string $hierarchy_idnumber Target hierarchy ID number.
+     * @param int|null $depth Fixed level depth to fetch from. If null, all levels are fetched.
      * @return void
      * @throws coding_exception
      */
-    protected static function add_level_selector(MoodleQuickForm $mform, string $hierarchy_idnumber): void {
+    protected static function add_level_selector(MoodleQuickForm $mform, string $hierarchy_idnumber, ?int $depth = null): void {
         $hierarchy = hierarchy::get_record([ 'idnumber' => $hierarchy_idnumber ]);
         if (!$hierarchy) {
             $mform->addElement(
@@ -207,10 +208,7 @@ abstract class org_filter_base extends plugin_base {
             return;
         }
 
-        $levels = level::get_records(
-            [ 'hierarchyid' => $hierarchy->get('id') ],
-            'name'
-        );
+        $levels = static::get_levels_for_selector($hierarchy->get('id'), $depth);
         if (empty($levels)) {
             $mform->addElement(
                 'static',
@@ -234,5 +232,45 @@ abstract class org_filter_base extends plugin_base {
             $level_options,
             [ 'multiple' => true ]
         );
+    }
+
+    /**
+     * Get levels to be output in the level selector.
+     *
+     * @param int $hierarchy_id Parent hierarchy ID.
+     * @param int|null $depth Fixed level depth to fetch from. If null, all levels are fetched.
+     * @return level[] List of levels.
+     * @throws coding_exception
+     */
+    protected static function get_levels_for_selector(int $hierarchy_id, ?int $depth): array {
+        if ($depth === null) {
+            return level::get_records(
+                [ 'hierarchyid' => $hierarchy_id ],
+                'name'
+            );
+        }
+
+        $root_level = level::get_record([
+            'hierarchyid' => $hierarchy_id,
+            'parent' => 0,
+        ]);
+
+        $depth_levels = [ $root_level ];
+        for ($i = 0; $i < $depth; $i++) {
+            $new_levels = [];
+            foreach ($depth_levels as $level) {
+                $new_levels = array_merge(
+                    $new_levels,
+                    level::get_records([
+                        'hierarchyid' => $hierarchy_id,
+                        'parent' => $level->get('id'),
+                    ])
+                );
+            }
+
+            $depth_levels = $new_levels;
+        }
+
+        return $depth_levels;
     }
 }
