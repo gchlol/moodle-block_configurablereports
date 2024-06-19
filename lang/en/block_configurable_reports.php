@@ -47,6 +47,14 @@ Use '%%FILTER_ORGJOBCODE:table.path%%'
 ";
 $string['filterorgjobcode_nohierarchy'] = 'Job Code hierarchy not found';
 $string['filterorgjobcode_nolevels'] = 'No job codes found';
+$string['orgstream'] = 'Organisation Stream';
+$string['filterorgstream_name'] = 'Filter organisation streams';
+$string['filterorgstream_summary'] = "
+Filter by Organisation Division<br>
+Use '%%FILTER_ORGSTREAM:table.path%%'
+";
+$string['filterorgstream_nohierarchy'] = 'Cost Centre hierarchy not found';
+$string['filterorgstream_nolevels'] = 'No streams found';
 $string['orgunit'] = 'Organisation Unit';
 $string['filterorgunit_name'] = 'Filter organisation units';
 $string['filterorgunit_summary'] = "
