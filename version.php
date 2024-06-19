@@ -36,3 +36,7 @@ $plugin->release = '3.9.0';
 $plugin->component = 'block_configurable_reports'; // Full name of the plugin (used for diagnostics)
 $plugin->cron      = 86400; // = Once in 24h, Set min time between cron executions.
                             // Should probably be at night to off load CPU load.
+
+$plugin->dependencies = [
+    'tool_organisation' => 2024061700,
+];
