@@ -31,6 +31,14 @@ Use '%%FILTER_ORGDIVISION:table.path%%'
 ";
 $string['filterorgdivision_nohierarchy'] = 'Paypoint hierarchy not found';
 $string['filterorgdivision_nolevels'] = 'No divisions found';
+$string['orgemptype'] = 'Organisation Employee Type';
+$string['filterorgemptype_name'] = 'Filter organisation employee type';
+$string['filterorgemptype_summary'] = "
+Filter by Organisation Employee Type<br>
+Use '%%FILTER_ORGEMPTYPE:table.path%%'
+";
+$string['filterorgemptype_nohierarchy'] = 'Employee Type hierarchy not found';
+$string['filterorgemptype_nolevels'] = 'No employee types found';
 $string['orgfacility'] = 'Organisation Facility';
 $string['filterorgfacility_name'] = 'Filter organisation facilities';
 $string['filterorgfacility_summary'] = "
