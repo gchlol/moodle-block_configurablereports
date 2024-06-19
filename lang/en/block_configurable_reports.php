@@ -15,6 +15,76 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 // GCHLOL
+$string['orgcostcentre'] = 'Organisation Cost Centre';
+$string['filterorgcostcentre_name'] = 'Filter organisation cost centres';
+$string['filterorgcostcentre_summary'] = "
+Filter by Organisation Cost Centre<br>
+Use '%%FILTER_ORGCOSTCENTRE:table.path%%'
+";
+$string['filterorgcostcentre_includechildren'] = 'Include child cost centres';
+$string['filterorgcostcentre_nohierarchy'] = 'Paypoint hierarchy not found';
+$string['filterorgcostcentre_nolevels'] = 'No cost centres found';
+$string['orgdivision'] = 'Organisation Division';
+$string['filterorgdivision_name'] = 'Filter organisation divisions';
+$string['filterorgdivision_summary'] = "
+Filter by Organisation Division<br>
+Use '%%FILTER_ORGDIVISION:table.path%%'
+";
+$string['filterorgdivision_nohierarchy'] = 'Paypoint hierarchy not found';
+$string['filterorgdivision_nolevels'] = 'No divisions found';
+$string['orgemptype'] = 'Organisation Employee Type';
+$string['filterorgemptype_name'] = 'Filter organisation employee type';
+$string['filterorgemptype_summary'] = "
+Filter by Organisation Employee Type<br>
+Use '%%FILTER_ORGEMPTYPE:table.path%%'
+";
+$string['filterorgemptype_includechildren'] = 'Include child employee types';
+$string['filterorgemptype_nohierarchy'] = 'Employee Type hierarchy not found';
+$string['filterorgemptype_nolevels'] = 'No employee types found';
+$string['orgfacility'] = 'Organisation Facility';
+$string['filterorgfacility_name'] = 'Filter organisation facilities';
+$string['filterorgfacility_summary'] = "
+Filter by Organisation Facility<br>
+Use '%%FILTER_ORGFACILITY:table.path%%'
+";
+$string['filterorgfacility_includechildren'] = 'Include child facilities';
+$string['filterorgfacility_nohierarchy'] = 'Facility hierarchy not found';
+$string['filterorgfacility_nolevels'] = 'No facilities found';
+$string['orgjobcode'] = 'Organisation Job Code';
+$string['filterorgjobcode_name'] = 'Filter organisation job codes';
+$string['filterorgjobcode_summary'] = "
+Filter by Organisation Job Code<br>
+Use '%%FILTER_ORGJOBCODE:table.path%%'
+";
+$string['filterorgjobcode_includechildren'] = 'Include child job codes';
+$string['filterorgjobcode_nohierarchy'] = 'Job Code hierarchy not found';
+$string['filterorgjobcode_nolevels'] = 'No job codes found';
+$string['orgpaypoint'] = 'Organisation Paypoint';
+$string['filterorgpaypoint_name'] = 'Filter organisation paypoints';
+$string['filterorgpaypoint_summary'] = "
+Filter by Organisation Paypoint<br>
+Use '%%FILTER_ORGPAYPOINT:table.path%%'
+";
+$string['filterorgpaypoint_includechildren'] = 'Include child paypoints';
+$string['filterorgpaypoint_nohierarchy'] = 'Paypoint hierarchy not found';
+$string['filterorgpaypoint_nolevels'] = 'No paypoints found';
+$string['orgstream'] = 'Organisation Stream';
+$string['filterorgstream_name'] = 'Filter organisation streams';
+$string['filterorgstream_summary'] = "
+Filter by Organisation Stream<br>
+Use '%%FILTER_ORGSTREAM:table.path%%'
+";
+$string['filterorgstream_nohierarchy'] = 'Cost Centre hierarchy not found';
+$string['filterorgstream_nolevels'] = 'No streams found';
+$string['orgunit'] = 'Organisation Unit';
+$string['filterorgunit_name'] = 'Filter organisation units';
+$string['filterorgunit_summary'] = "
+Filter by Organisation Unit<br>
+Use '%%FILTER_ORGUNIT:table.path%%'
+";
+$string['filterorgunit_includechildren'] = 'Include child units';
+$string['filterorgunit_nohierarchy'] = 'Unit hierarchy not found';
+$string['filterorgunit_nolevels'] = 'No units found';
 $string['fsearchsession'] = 'Face to Face Search Session ID';
 $string['fsearchuser'] = 'Search User Name Details';
 $string['division'] = 'Filter by Division';
