@@ -23,14 +23,6 @@ Use '%%FILTER_ORGDIVISION:table.path%%'
 ";
 $string['filterorgdivision_nohierarchy'] = 'Paypoint hierarchy not found';
 $string['filterorgdivision_nolevels'] = 'No divisions found';
-$string['orgunit'] = 'Organisation Unit';
-$string['filterorgunit_name'] = 'Filter organisation units';
-$string['filterorgunit_summary'] = "
-Filter by Organisation Unit<br>
-Use '%%FILTER_ORGUNIT:table.path%%'
-";
-$string['filterorgunit_nohierarchy'] = 'Unit hierarchy not found';
-$string['filterorgunit_nolevels'] = 'No units found';
 $string['orgfacility'] = 'Organisation Facility';
 $string['filterorgfacility_name'] = 'Filter organisation facilities';
 $string['filterorgfacility_summary'] = "
@@ -47,6 +39,14 @@ Use '%%FILTER_ORGJOBCODE:table.path%%'
 ";
 $string['filterorgjobcode_nohierarchy'] = 'Job Code hierarchy not found';
 $string['filterorgjobcode_nolevels'] = 'No job codes found';
+$string['orgunit'] = 'Organisation Unit';
+$string['filterorgunit_name'] = 'Filter organisation units';
+$string['filterorgunit_summary'] = "
+Filter by Organisation Unit<br>
+Use '%%FILTER_ORGUNIT:table.path%%'
+";
+$string['filterorgunit_nohierarchy'] = 'Unit hierarchy not found';
+$string['filterorgunit_nolevels'] = 'No units found';
 $string['fsearchsession'] = 'Face to Face Search Session ID';
 $string['fsearchuser'] = 'Search User Name Details';
 $string['division'] = 'Filter by Division';
