@@ -273,6 +273,12 @@ abstract class org_filter_base extends plugin_base {
             [ 'multiple' => true ]
         );
 
+        // Select options submitted externally to the page. e.g. Via GET params.
+        $form_value = static::get_form_value();
+        if (!empty($form_value)) {
+            $mform->setDefault(static::get_identifier(), $form_value);
+        }
+
         $include_children_identifier = static::get_identifier() . '_include_children';
         if ($include_children !== null) {
             $mform->addElement(

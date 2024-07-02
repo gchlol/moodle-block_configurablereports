@@ -25,6 +25,6 @@ class plugin_orgcostcentre extends org_filter_base {
      * @inheritDoc
      */
     public function print_filter(MoodleQuickForm $mform, stdClass $data): void {
-        parent::add_level_selector($mform, 'costcentre');
+        self::add_level_selector($mform, 'costcentre');
     }
 }
