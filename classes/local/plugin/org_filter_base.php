@@ -297,6 +297,11 @@ abstract class org_filter_base extends plugin_base {
             '',
             static::get_string('includechildren')
         );
+
+        $include_children_param = optional_param($include_children_identifier, 0, PARAM_BOOL);
+        if ($include_children_param) {
+            $mform->setDefault($include_children_identifier, 1);
+        }
     }
 
     /**
