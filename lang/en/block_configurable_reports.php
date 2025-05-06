@@ -520,7 +520,7 @@ $string['totalrecords'] = 'Total record count = {$a->totalrecords}';
 $string['lastexecutiontime'] = 'Execution time = {$a} (Sec)';
 
 $string['reportcategories'] = '1) Choose a remote report categories';
-$string['reportsincategory'] = '2) Choose a report form the list';
+$string['reportsincategory'] = '2) Choose a report from the list';
 $string['remotequerysql'] = 'SQL query';
 $string['executeat'] = 'Execute at';
 $string['executeatinfo'] = 'Moodle CRON will run scheduled SQL queries after selected time. Once in 24h';
