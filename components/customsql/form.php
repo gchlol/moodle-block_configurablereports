@@ -58,7 +58,7 @@ class customsql_form extends moodleform {
             $res = json_decode($res);
 
             if (is_array($res)) {
-                $reportcategories = array(get_string('choose'));
+                $reportcategories = ['' => get_string('choose')];
                 foreach ($res as $item) {
                     if ($item->type == 'dir') {
                         $reportcategories[$item->path] = $item->path;
@@ -71,7 +71,7 @@ class customsql_form extends moodleform {
 
                 $reportsincatstr = get_string('reportsincategory', 'block_configurable_reports');
                 $reportsincatattrs = ['onchange' => 'M.block_configurable_reports.onchange_reportsincategory(this,"'.sesskey().'")'];
-                $mform->addElement('select', 'reportsincategory', $reportsincatstr, $reportcategories, $reportsincatattrs);
+                $mform->addElement('select', 'reportsincategory', $reportsincatstr, ['' => get_string('choose')], $reportsincatattrs);
 
                 $mform->addElement('textarea', 'remotequerysql', get_string('remotequerysql', 'block_configurable_reports'),
                     'rows="15" cols="90"');
