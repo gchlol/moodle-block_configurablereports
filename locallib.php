@@ -506,7 +506,6 @@ function cr_import_xml($xml, $course) {
         }
         $newreport->courseid = $course->id;
         $newreport->ownerid = $USER->id;
-        $newreport->name .= " (" . userdate(time()) . ")";
 
         if (!$DB->insert_record('block_configurable_reports', $newreport)) {
             return false;
