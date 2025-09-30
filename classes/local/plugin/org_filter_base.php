@@ -25,17 +25,6 @@ abstract class org_filter_base extends plugin_base {
     protected abstract static function get_name(): string;
 
     /**
-     * Output filter fields to report form.
-     *
-     * @param MoodleQuickForm $mform Report form.
-     * @param stdClass $data Filter data.
-     * @return void
-     * @throws coding_exception
-     * @noinspection PhpUnusedParameterInspection
-     */
-    public abstract function print_filter(MoodleQuickForm $mform, stdClass $data): void;
-
-    /**
      * Initialise filter.
      *
      * @return void

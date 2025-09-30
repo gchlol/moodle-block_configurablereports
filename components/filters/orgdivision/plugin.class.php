@@ -3,35 +3,22 @@
 use block_configurable_reports\local\plugin\org_filter_base;
 use tool_organisation\persistent\level;
 
-/** @noinspection PhpUnused */
 class plugin_orgdivision extends org_filter_base {
 
-    /**
-     * @inheritDoc
-     */
     public function init(): void {
         parent::init();
 
         $this->reporttypes = [ 'sql', 'users' ];
     }
 
-    /**
-     * @inheritDoc
-     */
     protected static function get_name(): string {
         return 'orgdivision';
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function print_filter(MoodleQuickForm $mform, stdClass $data): void {
+    public function print_filter(MoodleQuickForm $mform, $formdata = false): void {
         self::add_level_selector($mform, 'unit', null, true);
     }
 
-    /**
-     * @inheritDoc
-     */
     protected static function get_levels_for_selector(int $hierarchy_id, ?int $depth): array {
         global $DB;
 

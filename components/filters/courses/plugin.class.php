@@ -109,7 +109,7 @@ class plugin_courses extends plugin_base {
 
         if (!empty($courselist)) {
             [$usql, $params] = $remotedb->get_in_or_equal($courselist);
-            $courses = $remotedb->get_records_select('course', "id $usql", $params);
+            $courses = $remotedb->get_records_select('course', "id $usql AND visible = 1", $params); // GCHLOL: PB 17/9/13 Modify to order courses and not show hidden courses.
 
             foreach ($courses as $c) {
                 $courseoptions[$c->id] = format_string($c->fullname);

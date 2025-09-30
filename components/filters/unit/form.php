@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -15,50 +14,50 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/** Configurable Reports
-  * A Moodle block for creating customizable reports
-  * @package blocks
-  * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
-  * @date: 2009
-  */ 
+defined('MOODLE_INTERNAL') || die;
 
-if (!defined('MOODLE_INTERNAL')) {
-    die('Direct access to this script is forbidden.');    ///  It must be included from a Moodle page
-}
+require_once($CFG->libdir . '/formslib.php');
 
-require_once($CFG->libdir.'/formslib.php');
-
+/**
+ * Class unit_form
+ *
+ * @package    block_configurable_reports
+ * @copyright  2025 Gold Coast Health
+ * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class unit_form extends moodleform {
-    function definition() {
-        global $DB, $USER, $CFG;
+
+    /**
+     * Form definition
+     */
+    public function definition(): void {
+
+        global $remotedb;
 
         $mform =& $this->_form;
 
-        $mform->addElement('header', '', get_string('unit','block_configurable_reports'), '');
+        $mform->addElement('header', '', get_string('unit', 'block_configurable_reports'), '');
 
-		$this->_customdata['compclass']->add_form_elements($mform,$this); 
-		
-		$columns = $DB->get_columns('user');
-		
-		$usercolumns = array();
-		foreach($columns as $c)
-			$usercolumns[$c->name] = $c->name;
-			
-		if($profile = $DB->get_records('user_info_field'))
-			foreach($profile as $p)
-				$usercolumns['profile_'.$p->shortname] = $p->name;	
-			
-		unset($usercolumns['password']);
-		unset($usercolumns['sesskey']);
-			
-        $mform->addElement('select', 'field', get_string('field','block_configurable_reports'), $usercolumns);
-		
-       
-        // buttons
+        $this->_customdata['compclass']->add_form_elements($mform, $this);
+
+        $columns = $remotedb->get_columns('user');
+
+        $usercolumns = [];
+        foreach ($columns as $c) {
+            $usercolumns[$c->name] = $c->name;
+        }
+
+        if ($profile = $remotedb->get_records('user_info_field')) {
+            foreach ($profile as $p) {
+                $usercolumns['profile_' . $p->shortname] = format_string($p->name);
+            }
+        }
+
+        unset($usercolumns['password'], $usercolumns['sesskey']);
+
+        $mform->addElement('select', 'field', get_string('field', 'block_configurable_reports'), $usercolumns);
+
+        // Buttons.
         $this->add_action_buttons(true, get_string('add'));
-
     }
-
 }
-
-?>

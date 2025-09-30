@@ -65,7 +65,7 @@ class customsql_form extends moodleform {
             $res = json_decode($res);
 
             if (is_array($res)) {
-                $reportcategories = [get_string('choose')];
+                $reportcategories = ['' => get_string('choose')]; // GCHLOL: Add blank value to choose.
 
                 foreach ($res as $item) {
                     if ($item->type === 'dir') {
@@ -81,7 +81,7 @@ class customsql_form extends moodleform {
                 $reportsincatstr = get_string('reportsincategory', 'block_configurable_reports');
                 $reportsincatattrs =
                     ['onchange' => 'M.block_configurable_reports.onchange_reportsincategory(this,"' . sesskey() . '")'];
-                $mform->addElement('select', 'reportsincategory', $reportsincatstr, $reportcategories, $reportsincatattrs);
+                $mform->addElement('select', 'reportsincategory', $reportsincatstr, ['' => get_string('choose')], $reportsincatattrs); // GCHLOL: Set options to just choose.
 
                 $mform->addElement(
                     'textarea',
