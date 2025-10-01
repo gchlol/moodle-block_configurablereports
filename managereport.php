@@ -79,7 +79,7 @@ if ($importpath) {
         $github = new \block_configurable_reports\github();
         $github->set_repo($importrepo);
 
-        $rawresponse = $github->get("/contents/$import_path");
+        $rawresponse = $github->get("/contents/$importpath");
         $response = json_decode($rawresponse);
         $xml = base64_decode($response->content);
 
