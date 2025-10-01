@@ -1,34 +1,8 @@
-/* TODO needs to be converted to AMD and converted to vanila JS */
-
-var editor_querysql = null;
-var editor_remotequerysql = null;
-
 M.block_configurable_reports = {
 
 
     init: function(Y) {
         this.Y = Y;
-
-        // Documentation can be found @ http://codemirror.net/
-        editor_querysql = CodeMirror.fromTextArea(document.getElementById('id_querysql'), {
-            mode: "text/x-mysql",
-            rtlMoveVisually: true,
-            indentWithTabs: true,
-            smartIndent: true,
-            lineNumbers: true,
-            matchBrackets: true,
-            autofocus: true,
-        });
-
-        editor_remotequerysql = CodeMirror.fromTextArea(document.getElementById('id_remotequerysql'), {
-            mode: "text/x-mysql",
-            rtlMoveVisually: true,
-            indentWithTabs: true,
-            smartIndent: true,
-            lineNumbers: true,
-            matchBrackets: true,
-        });
-
     },
 
     loadReportCategories: function(Y) {
@@ -78,7 +52,7 @@ M.block_configurable_reports = {
 
                     for (var prop in response) {
                         if (response.hasOwnProperty(prop)) {
-                            option = Y.Node.create('<option value=' + response[prop]["git_url"] + '>' + response[prop]["name"] + '</option>');
+                            option = Y.Node.create('<option value=' + encodeURIComponent(response[prop]["path"]) + '>' + response[prop]["name"] + '</option>');
                             select_reportnames.appendChild(option);
                         }
                     }
@@ -94,7 +68,7 @@ M.block_configurable_reports = {
         var Y = this.Y;
 
         var path = select_element[select_element.selectedIndex].value;
-        location.href = location.href + "&importurl=" + encodeURIComponent(path);
+        location.href = location.href + "&importpath=" + encodeURIComponent(path);
     },
 
     onchange_reportcategories: function(select_element) {
@@ -109,21 +83,17 @@ M.block_configurable_reports = {
             on: {
                 success: function(id, o) {
                     var response = Y.JSON.parse(o.responseText);
-                    var list = Y.Node.create('<select>');
+                    select_reportsincategory.get('childNodes').remove();
                     option = Y.Node.create('<option value="-1">Choose...</option>');
-                    list.appendChild(option);
+                    select_reportsincategory.appendChild(option);
 
                     for (var prop in response) {
                         if (response.hasOwnProperty(prop)) {
                             option = Y.Node.create('<option value=' + response[prop]["fullname"] + '>' + response[prop]["name"] + '</option>');
-                            list.appendChild(option);
+                            select_reportsincategory.appendChild(option);
                         }
                     }
                     select_reportsincategory.setStyle('visibility', 'visible');
-                    list.setAttribute('id', 'id_reportsincategory');
-                    list.setAttribute('name', 'reportsincategory');
-                    list.setAttribute('onchange', 'M.block_configurable_reports.onchange_reportsincategory(this,"' + this.sesskey + '")');
-                    select_reportsincategory.replace(list);
                 },
                 failure: function(id, o) {
                     if (o.statusText != 'abort') {
@@ -150,7 +120,12 @@ M.block_configurable_reports = {
                     textarea_reportsincategory.set('value', response);
 
                     // Use codemirror editor.
-                    editor_remotequerysql.setValue(response);
+                    var remoteQueryTextarea = document.getElementById('id_remotequerysql');
+                    var remoteQueryEditor = remoteQueryTextarea.parentElement.querySelector('.CodeMirror').CodeMirror;
+
+                    if (remoteQueryEditor !== undefined) {
+                        remoteQueryEditor.setValue(response);
+                    }
                 },
                 failure: function(id, o) {
                     if (o.statusText != 'abort') {
