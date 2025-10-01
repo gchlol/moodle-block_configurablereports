@@ -605,7 +605,7 @@ function cr_import_xml(string $xml, object $course) {
         }
         $newreport->courseid = $course->id;
         $newreport->ownerid = $USER->id;
-        $newreport->name .= " (" . userdate(time()) . ")";
+        // GCHLOL: Don't include dates when reports are imported. $newreport->name .= " (" . userdate(time()) . ")";
 
         if (!$DB->insert_record('block_configurable_reports', $newreport)) {
             return false;

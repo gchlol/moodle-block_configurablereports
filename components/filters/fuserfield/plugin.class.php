@@ -173,6 +173,7 @@ class plugin_fuserfield extends plugin_base {
             $conditions = [];
             if ($formdata->excludedeletedusers) {
                 $conditions['deleted'] = 0;
+                $conditions['suspended'] = 0;
             }
             $userlist = array_keys($remotedb->get_records('user', $conditions));
         } else {
@@ -186,7 +187,7 @@ class plugin_fuserfield extends plugin_base {
                 if ($field = $remotedb->get_record('user_info_field', $conditions)) {
                     $selectname = format_string($field->name);
                     [$usql, $params] = $remotedb->get_in_or_equal($userlist);
-                    $sql = "SELECT DISTINCT(data) as data FROM {user_info_data} WHERE fieldid = ? AND userid $usql";
+                    $sql = "SELECT DISTINCT(data) as data FROM {user_info_data} WHERE fieldid = ? AND userid $usql ORDER BY data";
                     $params = array_merge([$field->id], $params);
 
                     if ($infodata = $remotedb->get_records_sql($sql, $params)) {

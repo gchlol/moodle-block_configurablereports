@@ -125,4 +125,11 @@ if ($ADMIN->fulltree) {
             get_string('allowedsqlusersinfo', 'block_configurable_reports'), '', PARAM_TEXT
         )
     );
+
+    $settings->add(new admin_setting_configpasswordunmask(
+        'block_configurable_reports/repositorytoken',
+        get_string('repositorytoken', 'block_configurable_reports'),
+        get_string('repositorytokeninfo', 'block_configurable_reports'),
+        ''
+    ));
 }

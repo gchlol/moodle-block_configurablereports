@@ -39,6 +39,20 @@ class github extends \curl {
     protected string $repo = '';
 
     /**
+     * Constructor.
+     *
+     * @param array $settings
+     */
+    public function __construct($settings = []) {
+        parent::__construct($settings);
+
+        $token = get_config('block_configurable_reports', 'repositorytoken');
+        if (!empty($token)) {
+            $this->set_token($token);
+        }
+    }
+
+    /**
      * Set repository
      *
      * @param string $repo
@@ -77,4 +91,14 @@ class github extends \curl {
         return parent::get($repolink, $params, $options);
     }
 
+    /**
+     * Set an authorisation token to use with requests.
+     * This should be a fine-grained or classic personal access token.
+     *
+     * @param string $token Access token.
+     * @return void
+     */
+    public function set_token(string $token): void {
+        $this->setHeader("Authorization: Bearer $token");
+    }
 }

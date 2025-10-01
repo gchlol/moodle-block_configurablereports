@@ -37,7 +37,9 @@ if (!$userandrepo = get_config('block_configurable_reports', 'sharedsqlrepositor
 
 $github = new \block_configurable_reports\github;
 $github->set_repo($userandrepo);
-$content = $github->get('/master/' . $reportname);
+$rawresponse = $github->get("/contents/$reportname");
+$response = json_decode($rawresponse);
+$content = base64_decode(str_replace("\n", '', $response->content));
 [$subject, $description, $sql] = explode('###', $content);
 
-echo json_encode($sql);
+echo json_encode(trim($sql));
