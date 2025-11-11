@@ -120,17 +120,47 @@ if (($show || $hide) && confirm_sesskey()) {
     }
     $action = ($visible) ? 'showed' : 'hidden';
 
+    // Log visibility change.
+    $changemsg = $visible
+        ? get_string('event:changevisibilityshown', 'block_configurable_reports')
+        : get_string('event:changevisibilityhidden', 'block_configurable_reports');
+    $event = \block_configurable_reports\event\report_updated::create([
+        'context' => $context,
+        'objectid' => $report->id,
+        'other' => [
+            'reportname' => format_string($report->name),
+            'change' => $changemsg,
+            'source' => 'ui',
+        ],
+    ]);
+    $event->add_record_snapshot('block_configurable_reports', $report);
+    $event->trigger();
+
     header("Location: $CFG->wwwroot/blocks/configurable_reports/managereport.php?courseid=$courseid");
     die;
 }
 
 if ($duplicate && confirm_sesskey()) {
-    $newreport = $report;
+    $newreport = clone $report;
     unset($newreport->id);
     $newreport->name = get_string('copyasnoun') . ' ' . $newreport->name;
     if (!$newreportid = $DB->insert_record('block_configurable_reports', $newreport)) {
         throw new moodle_exception('cannotduplicate', 'block_configurable_reports');
     }
+
+    // Trigger duplicated event.
+    $event = \block_configurable_reports\event\report_duplicated::create([
+        'context' => $context,
+        'objectid' => $newreportid,
+        'other' => [
+            'reportname' => format_string($newreport->name),
+            'sourcename' => format_string($report->name),
+            'sourceid' => $report->id,
+            'source' => 'ui',
+        ],
+    ]);
+    $event->add_record_snapshot('block_configurable_reports', $report);
+    $event->trigger();
 
     header("Location: $CFG->wwwroot/blocks/configurable_reports/managereport.php?courseid=$courseid");
     die;
@@ -153,6 +183,17 @@ if ($delete && confirm_sesskey()) {
     }
 
     $DB->delete_records('block_configurable_reports', ['id' => $report->id]);
+    // Trigger deleted event.
+    $event = \block_configurable_reports\event\report_deleted::create([
+        'context' => $context,
+        'objectid' => $report->id,
+        'other' => [
+            'reportname' => format_string($report->name),
+            'source' => 'ui',
+        ],
+    ]);
+    $event->add_record_snapshot('block_configurable_reports', $report);
+    $event->trigger();
     header("Location: $CFG->wwwroot/blocks/configurable_reports/managereport.php?courseid=$courseid");
     die;
 }
@@ -237,6 +278,16 @@ if ($editform->is_cancelled()) {
         if (!$lastid = $DB->insert_record('block_configurable_reports', $data)) {
             throw new moodle_exception('errorsavingreport', 'block_configurable_reports');
         }
+        // Trigger created event.
+        $event = \block_configurable_reports\event\report_created::create([
+            'context' => $context,
+            'objectid' => $lastid,
+            'other' => [
+                'reportname' => format_string($data->name),
+                'source' => 'ui',
+            ],
+        ]);
+        $event->trigger();
 
         $reportclass = new $reportclassname($lastid);
         redirect(
@@ -247,9 +298,49 @@ if ($editform->is_cancelled()) {
         $reportclass = new $reportclassname($data->id);
         $data->type = $report->type;
 
+        // Compute change summary for key fields.
+        $changes = [];
+        if (isset($data->name) && $data->name !== $report->name) {
+            $changes[] = get_string('event:changetitle', 'block_configurable_reports');
+        }
+        if (isset($data->summary) && $data->summary !== $report->summary) {
+            $changes[] = get_string('event:changedescription', 'block_configurable_reports');
+        }
+        if (isset($data->export) && $data->export !== $report->export) {
+            $changes[] = get_string('event:changeexport', 'block_configurable_reports');
+        }
+        if (isset($data->jsordering) && (int)$data->jsordering !== (int)$report->jsordering) {
+            $changes[] = get_string('event:changejsorder', 'block_configurable_reports');
+        }
+        if (isset($data->global) && (int)$data->global !== (int)$report->global) {
+            $changes[] = get_string('event:changescope', 'block_configurable_reports');
+        }
+        if (isset($data->cron) && (int)$data->cron !== (int)$report->cron) {
+            $changes[] = get_string('event:changecron', 'block_configurable_reports');
+        }
+        if (isset($data->displaytotalrecords) && (int)$data->displaytotalrecords !== (int)$report->displaytotalrecords) {
+            $changes[] = get_string('event:changetotalrecords', 'block_configurable_reports');
+        }
+        if (isset($data->displayprintbutton) && (int)$data->displayprintbutton !== (int)$report->displayprintbutton) {
+            $changes[] = get_string('event:changeprintbutton', 'block_configurable_reports');
+        }
+
         if (!$DB->update_record('block_configurable_reports', $data)) {
             throw new moodle_exception('errorsavingreport', 'block_configurable_reports');
         }
+
+        // Trigger updated event with summary of changes (if any).
+        $event = \block_configurable_reports\event\report_updated::create([
+            'context' => $context,
+            'objectid' => $data->id,
+            'other' => [
+                'reportname' => format_string($report->name),
+                'change' => !empty($changes) ? implode(', ', $changes) : get_string('event:changegeneric', 'block_configurable_reports'),
+                'source' => 'ui',
+            ],
+        ]);
+        $event->add_record_snapshot('block_configurable_reports', $report);
+        $event->trigger();
 
         redirect(
             $CFG->wwwroot . '/blocks/configurable_reports/editcomp.php?id=' . $data->id . '&comp=' . $reportclass->components[0]

@@ -63,9 +63,27 @@ class component_customsql extends component_base {
             $data = $cform->get_data();
             // Function cr_serialize() will add slashes.
             $components = cr_unserialize($this->config->components);
+            $oldsql = $components['customsql']['config']->querysql ?? '';
             $components['customsql']['config'] = $data;
             $this->config->components = cr_serialize($components);
             $DB->update_record('block_configurable_reports', $this->config);
+
+            // Trigger updated event noting SQL query change when applicable.
+            if (isset($data->querysql) && $data->querysql !== $oldsql) {
+                $context = ($this->config->courseid == SITEID)
+                    ? \context_system::instance()
+                    : \context_course::instance($this->config->courseid);
+                $event = \block_configurable_reports\event\report_updated::create([
+                    'context' => $context,
+                    'objectid' => $this->config->id,
+                    'other' => [
+                        'reportname' => format_string($this->config->name),
+                        'change' => get_string('event:changesqlquery', 'block_configurable_reports'),
+                        'source' => 'ui',
+                    ],
+                ]);
+                $event->trigger();
+            }
         }
     }
 

@@ -78,6 +78,19 @@ foreach ($reportdata as $key => $value) {
 
 $data .= "</report>";
 
+// Trigger export event for XML export from manage UI.
+$event = \block_configurable_reports\event\report_exported::create([
+    'context' => $context,
+    'objectid' => $report->id,
+    'other' => [
+        'reportname' => format_string($report->name),
+        'format' => 'xml',
+        'source' => 'ui',
+    ],
+]);
+$event->add_record_snapshot('block_configurable_reports', $report);
+$event->trigger();
+
 if (strpos($CFG->wwwroot, 'https://') === 0) {
     // Https sites - watch out for IE! KB812935 and KB316431.
     @header('Cache-Control: max-age=10');

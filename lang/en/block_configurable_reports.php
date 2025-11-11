@@ -664,3 +664,30 @@ $string['unit'] = 'Filter by Unit (DO NOT USE - use \'User field filter\' instea
 $string['stream'] = 'Filter by Stream (DO NOT USE - use \'User field filter\' instead)';
 $string['repositorytoken'] = 'GitHub Access Token';
 $string['repositorytokeninfo'] = 'Optional access token to include with each request. This token requires the Contents Read-only permission at a minimum. See <a target="_blank" href="https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens">Personal Access Token Docs</a>.';
+
+// Events.
+$string['event:reportviewed'] = 'Report viewed';
+$string['event:reportexported'] = 'Report exported';
+$string['event:reportcreated'] = 'Report created';
+$string['event:reportupdated'] = 'Report updated';
+$string['event:reportdeleted'] = 'Report deleted';
+$string['event:reportimported'] = 'Report imported';
+$string['event:reportduplicated'] = 'Report duplicated';
+
+// Event change summaries.
+$string['event:changetitle'] = 'Changed report title';
+$string['event:changedescription'] = 'Updated description';
+$string['event:changesqlquery'] = 'Updated SQL query';
+$string['event:changeexport'] = 'Modified export options';
+$string['event:changejsorder'] = 'Toggled JavaScript ordering';
+$string['event:changescope'] = 'Changed report scope (global/course)';
+$string['event:changecron'] = 'Modified scheduled run';
+$string['event:changetotalrecords'] = 'Toggled total records display';
+$string['event:changeprintbutton'] = 'Toggled print button';
+$string['event:changevisibilityshown'] = 'Made report visible';
+$string['event:changevisibilityhidden'] = 'Made report hidden';
+$string['event:changegeneric'] = 'Edited report settings';
+$string['event:changecomponentmodified'] = 'Modified component: {$a}';
+$string['event:changecomponentadded'] = 'Added component/plugin: {$a}';
+$string['event:changecomponentdeleted'] = 'Removed component/plugin: {$a}';
+$string['event:changecomponentreordered'] = 'Reordered component: {$a}';
