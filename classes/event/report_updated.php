@@ -22,6 +22,7 @@ use core\event\base;
 use moodle_url;
 
 /**
+ * Event triggered when a configurable report is updated.
  *
  * @package     block_configurable_reports
  * @copyright   2025 Gold Coast Health
@@ -40,12 +41,16 @@ class report_updated extends base {
     }
 
     public function get_description(): string {
-        $change = isset($this->other['change']) ? $this->other['change'] : 'updated';
-        return "User with id '{$this->userid}' updated report '{$this->other['reportname']}' (id {$this->objectid}): {$change}.";
+        $data = (object) [
+            'userid' => $this->userid,
+            'reportname' => $this->other['reportname'] ?? '',
+            'objectid' => $this->objectid,
+            'change' => $this->other['change'] ?? get_string('event:changegeneric', 'block_configurable_reports'),
+        ];
+        return get_string('event:reportupdated:desc', 'block_configurable_reports', $data);
     }
 
     public function get_url(): moodle_url {
         return new moodle_url('/blocks/configurable_reports/editreport.php', ['id' => $this->objectid]);
     }
 }
-

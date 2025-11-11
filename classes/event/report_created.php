@@ -22,6 +22,7 @@ use core\event\base;
 use moodle_url;
 
 /**
+ * Event triggered when a configurable report is created.
  *
  * @package     block_configurable_reports
  * @copyright   2025 Gold Coast Health
@@ -40,7 +41,12 @@ class report_created extends base {
     }
 
     public function get_description(): string {
-        return "User with id '{$this->userid}' created report '{$this->other['reportname']}' (id {$this->objectid}).";
+        $data = (object) [
+            'userid' => $this->userid,
+            'reportname' => $this->other['reportname'] ?? '',
+            'objectid' => $this->objectid,
+        ];
+        return get_string('event:reportcreated:desc', 'block_configurable_reports', $data);
     }
 
     public function get_url(): moodle_url {

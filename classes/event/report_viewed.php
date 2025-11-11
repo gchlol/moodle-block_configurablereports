@@ -22,6 +22,7 @@ use core\event\base;
 use moodle_url;
 
 /**
+ * Event triggered when a configurable report is viewed.
  *
  * @package     block_configurable_reports
  * @copyright   2025 Gold Coast Health
@@ -40,11 +41,15 @@ class report_viewed extends base {
     }
 
     public function get_description(): string {
-        return "User with id '{$this->userid}' viewed report '{$this->other['reportname']}' (id {$this->objectid}).";
+        $data = (object) [
+            'userid' => $this->userid,
+            'reportname' => $this->other['reportname'] ?? '',
+            'objectid' => $this->objectid,
+        ];
+        return get_string('event:reportviewed:desc', 'block_configurable_reports', $data);
     }
 
     public function get_url(): moodle_url {
         return new moodle_url('/blocks/configurable_reports/viewreport.php', ['id' => $this->objectid]);
     }
 }
-

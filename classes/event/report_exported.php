@@ -22,6 +22,7 @@ use core\event\base;
 use moodle_url;
 
 /**
+ * Event triggered when a configurable report is exported.
  *
  * @package     block_configurable_reports
  * @copyright   2025 Gold Coast Health
@@ -40,12 +41,16 @@ class report_exported extends base {
     }
 
     public function get_description(): string {
-        $fmt = isset($this->other['format']) ? $this->other['format'] : 'unknown';
-        return "User with id '{$this->userid}' exported report '{$this->other['reportname']}' (id {$this->objectid}) in format '{$fmt}'.";
+        $data = (object) [
+            'userid' => $this->userid,
+            'reportname' => $this->other['reportname'] ?? '',
+            'objectid' => $this->objectid,
+            'format' => $this->other['format'] ?? 'unknown',
+        ];
+        return get_string('event:reportexported:desc', 'block_configurable_reports', $data);
     }
 
     public function get_url(): moodle_url {
         return new moodle_url('/blocks/configurable_reports/viewreport.php', ['id' => $this->objectid]);
     }
 }
-

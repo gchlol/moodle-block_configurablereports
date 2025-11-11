@@ -22,9 +22,11 @@ use core\event\base;
 use moodle_url;
 
 /**
+ * Event triggered when a configurable report is duplicated.
  *
- *
- * @package
+ * @package     block_configurable_reports
+ * @copyright   2025 Gold Coast Health
+ * @author      Jonas Sajonas
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class report_duplicated extends base {
@@ -39,13 +41,17 @@ class report_duplicated extends base {
     }
 
     public function get_description(): string {
-        $sourceid = $this->other['sourceid'] ?? 0;
-        $sourcename = $this->other['sourcename'] ?? '';
-        return "User with id '{$this->userid}' duplicated report '{$sourcename}' (id {$sourceid}) to '{$this->other['reportname']}' (id {$this->objectid}).";
+        $data = (object) [
+            'userid' => $this->userid,
+            'sourcename' => $this->other['sourcename'] ?? '',
+            'sourceid' => $this->other['sourceid'] ?? 0,
+            'reportname' => $this->other['reportname'] ?? '',
+            'objectid' => $this->objectid,
+        ];
+        return get_string('event:reportduplicated:desc', 'block_configurable_reports', $data);
     }
 
     public function get_url(): moodle_url {
         return new moodle_url('/blocks/configurable_reports/editreport.php', ['id' => $this->objectid]);
     }
 }
-

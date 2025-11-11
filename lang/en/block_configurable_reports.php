@@ -673,6 +673,13 @@ $string['event:reportupdated'] = 'Report updated';
 $string['event:reportdeleted'] = 'Report deleted';
 $string['event:reportimported'] = 'Report imported';
 $string['event:reportduplicated'] = 'Report duplicated';
+$string['event:reportviewed:desc'] = 'User with id \'{$a->userid}\' viewed report \'{$a->reportname}\' (id {$a->objectid}).';
+$string['event:reportexported:desc'] = 'User with id \'{$a->userid}\' exported report \'{$a->reportname}\' (id {$a->objectid}) in format \'{$a->format}\'.';
+$string['event:reportcreated:desc'] = 'User with id \'{$a->userid}\' created report \'{$a->reportname}\' (id {$a->objectid}).';
+$string['event:reportupdated:desc'] = 'User with id \'{$a->userid}\' updated report \'{$a->reportname}\' (id {$a->objectid}): {$a->change}.';
+$string['event:reportdeleted:desc'] = 'User with id \'{$a->userid}\' deleted report \'{$a->reportname}\' (id {$a->objectid}).';
+$string['event:reportimported:desc'] = 'User with id \'{$a->userid}\' imported report \'{$a->reportname}\' (id {$a->objectid}) from \'{$a->source}\'.';
+$string['event:reportduplicated:desc'] = 'User with id \'{$a->userid}\' duplicated report \'{$a->sourcename}\' (id {$a->sourceid}) to \'{$a->reportname}\' (id {$a->objectid}).';
 
 // Event change summaries.
 $string['event:changetitle'] = 'Changed report title';

@@ -22,6 +22,7 @@ use core\event\base;
 use moodle_url;
 
 /**
+ * Event triggered when a configurable report is imported.
  *
  * @package     block_configurable_reports
  * @copyright   2025 Gold Coast Health
@@ -40,12 +41,16 @@ class report_imported extends base {
     }
 
     public function get_description(): string {
-        $src = isset($this->other['source']) ? $this->other['source'] : 'unknown';
-        return "User with id '{$this->userid}' imported report '{$this->other['reportname']}' (id {$this->objectid}) from '{$src}'.";
+        $data = (object) [
+            'userid' => $this->userid,
+            'reportname' => $this->other['reportname'] ?? '',
+            'objectid' => $this->objectid,
+            'source' => $this->other['source'] ?? 'unknown',
+        ];
+        return get_string('event:reportimported:desc', 'block_configurable_reports', $data);
     }
 
     public function get_url(): moodle_url {
         return new moodle_url('/blocks/configurable_reports/editreport.php', ['id' => $this->objectid]);
     }
 }
-
