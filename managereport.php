@@ -25,6 +25,7 @@
 
 require_once("../../config.php");
 require_once($CFG->dirroot . "/blocks/configurable_reports/locallib.php");
+require_once($CFG->dirroot . "/blocks/configurable_reports/helperlib.php");
 require_once('import_form.php');
 
 $courseid = optional_param('courseid', SITEID, PARAM_INT);
@@ -63,16 +64,9 @@ if ($importurl) {
     }
 
     if ($newid = cr_import_xml($xml, $course)) {
-        // Trigger imported event (from URL source).
-        $event = \block_configurable_reports\event\report_imported::create([
-            'context' => $context,
-            'objectid' => $newid,
-            'other' => [
-                'reportname' => format_string($DB->get_field('block_configurable_reports','name',['id'=>$newid])),
-                'source' => 'url',
-            ],
-        ]);
-        $event->trigger();
+        if ($newreport = $DB->get_record('block_configurable_reports', ['id' => $newid])) {
+            cr_log_report_imported($context, $newreport, 'url');
+        }
         redirect(
             "$CFG->wwwroot/blocks/configurable_reports/managereport.php?courseid={$course->id}",
             get_string('reportcreated', 'block_configurable_reports')
@@ -94,15 +88,9 @@ if ($importpath) {
         $xml = base64_decode($response->content);
 
         if ($newid = cr_import_xml($xml, $course)) {
-            $event = \block_configurable_reports\event\report_imported::create([
-                'context' => $context,
-                'objectid' => $newid,
-                'other' => [
-                    'reportname' => format_string($DB->get_field('block_configurable_reports','name',['id'=>$newid])),
-                    'source' => 'repository',
-                ],
-            ]);
-            $event->trigger();
+            if ($newreport = $DB->get_record('block_configurable_reports', ['id' => $newid])) {
+                cr_log_report_imported($context, $newreport, 'repository');
+            }
             // Exit point
             redirect(
                 new moodle_url(
@@ -122,15 +110,9 @@ $mform = new import_form(null, $course->id);
 if ($data = $mform->get_data()) {
     if ($xml = $mform->get_file_content('userfile')) {
         if ($newid = cr_import_xml($xml, $course)) {
-            $event = \block_configurable_reports\event\report_imported::create([
-                'context' => $context,
-                'objectid' => $newid,
-                'other' => [
-                    'reportname' => format_string($DB->get_field('block_configurable_reports','name',['id'=>$newid])),
-                    'source' => 'upload',
-                ],
-            ]);
-            $event->trigger();
+            if ($newreport = $DB->get_record('block_configurable_reports', ['id' => $newid])) {
+                cr_log_report_imported($context, $newreport, 'upload');
+            }
             redirect(
                 "$CFG->wwwroot/blocks/configurable_reports/managereport.php?courseid={$course->id}",
                 get_string('reportcreated', 'block_configurable_reports')

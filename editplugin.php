@@ -26,6 +26,7 @@
 require_once("../../config.php");
 
 require_once($CFG->dirroot . "/blocks/configurable_reports/locallib.php");
+require_once($CFG->dirroot . "/blocks/configurable_reports/helperlib.php");
 
 $id = required_param('id', PARAM_INT);
 $comp = required_param('comp', PARAM_ALPHA);
@@ -118,20 +119,10 @@ if (!$cid) {
         $components[$comp]['elements'] = $elements;
         $report->components = cr_serialize($components);
         $DB->update_record('block_configurable_reports', $report);
-        // Trigger updated event for reordering or deletion.
         $context = ($report->courseid == SITEID) ? \context_system::instance() : \context_course::instance($report->courseid);
         $changemsg = $delete ? get_string('event:changecomponentdeleted', 'block_configurable_reports', $pname)
                              : get_string('event:changecomponentreordered', 'block_configurable_reports', $comp);
-        $event = \block_configurable_reports\event\report_updated::create([
-            'context' => $context,
-            'objectid' => $report->id,
-            'other' => [
-                'reportname' => format_string($report->name),
-                'change' => $changemsg,
-                'source' => 'ui',
-            ],
-        ]);
-        $event->trigger();
+        cr_log_report_updated($context, $report, $changemsg);
         redirect(new moodle_url('/blocks/configurable_reports/editcomp.php', ['id' => $id, 'comp' => $comp]));
         exit;
     }
@@ -194,18 +185,8 @@ if (isset($pluginclass->form) && $pluginclass->form) {
             if (!$DB->update_record('block_configurable_reports', $report)) {
                 throw new moodle_exception('errorsaving');
             }
-            // Trigger updated event for component config change.
             $context = ($report->courseid == SITEID) ? \context_system::instance() : \context_course::instance($report->courseid);
-            $event = \block_configurable_reports\event\report_updated::create([
-                'context' => $context,
-                'objectid' => $report->id,
-                'other' => [
-                    'reportname' => format_string($report->name),
-                    'change' => get_string('event:changecomponentmodified', 'block_configurable_reports', $comp),
-                    'source' => 'ui',
-                ],
-            ]);
-            $event->trigger();
+            cr_log_report_updated($context, $report, get_string('event:changecomponentmodified', 'block_configurable_reports', $comp));
             redirect(new moodle_url('/blocks/configurable_reports/editcomp.php', ['id' => $id, 'comp' => $comp]));
             exit;
 
@@ -231,18 +212,8 @@ if (isset($pluginclass->form) && $pluginclass->form) {
         if (!$DB->update_record('block_configurable_reports', $report)) {
             throw new moodle_exception('errorsaving');
         }
-        // Trigger updated event for component addition.
         $context = ($report->courseid == SITEID) ? \context_system::instance() : \context_course::instance($report->courseid);
-        $event = \block_configurable_reports\event\report_updated::create([
-            'context' => $context,
-            'objectid' => $report->id,
-            'other' => [
-                'reportname' => format_string($report->name),
-                'change' => get_string('event:changecomponentadded', 'block_configurable_reports', $pname),
-                'source' => 'ui',
-            ],
-        ]);
-        $event->trigger();
+        cr_log_report_updated($context, $report, get_string('event:changecomponentadded', 'block_configurable_reports', $pname));
         redirect(new moodle_url('/blocks/configurable_reports/editcomp.php', ['id' => $id, 'comp' => $comp]));
         exit;
     }

@@ -26,6 +26,7 @@
 require_once("../../config.php");
 
 require_once($CFG->dirroot . "/blocks/configurable_reports/locallib.php");
+require_once($CFG->dirroot . "/blocks/configurable_reports/helperlib.php");
 
 $id = required_param('id', PARAM_INT);
 
@@ -79,17 +80,7 @@ foreach ($reportdata as $key => $value) {
 $data .= "</report>";
 
 // Trigger export event for XML export from manage UI.
-$event = \block_configurable_reports\event\report_exported::create([
-    'context' => $context,
-    'objectid' => $report->id,
-    'other' => [
-        'reportname' => format_string($report->name),
-        'format' => 'xml',
-        'source' => 'ui',
-    ],
-]);
-$event->add_record_snapshot('block_configurable_reports', $report);
-$event->trigger();
+cr_log_report_exported($context, $report, 'xml');
 
 if (strpos($CFG->wwwroot, 'https://') === 0) {
     // Https sites - watch out for IE! KB812935 and KB316431.

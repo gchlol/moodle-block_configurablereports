@@ -23,6 +23,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+defined('MOODLE_INTERNAL') || die();
+require_once(__DIR__ . '/../../helperlib.php');
+
 /**
  * Class component_customsql
  *
@@ -73,16 +76,7 @@ class component_customsql extends component_base {
                 $context = ($this->config->courseid == SITEID)
                     ? \context_system::instance()
                     : \context_course::instance($this->config->courseid);
-                $event = \block_configurable_reports\event\report_updated::create([
-                    'context' => $context,
-                    'objectid' => $this->config->id,
-                    'other' => [
-                        'reportname' => format_string($this->config->name),
-                        'change' => get_string('event:changesqlquery', 'block_configurable_reports'),
-                        'source' => 'ui',
-                    ],
-                ]);
-                $event->trigger();
+                cr_log_report_updated($context, $this->config, get_string('event:changesqlquery', 'block_configurable_reports'));
             }
         }
     }

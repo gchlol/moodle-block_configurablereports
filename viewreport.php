@@ -25,6 +25,7 @@
 
 require_once("../../config.php");
 require_once($CFG->dirroot . "/blocks/configurable_reports/locallib.php");
+require_once($CFG->dirroot . "/blocks/configurable_reports/helperlib.php");
 
 $id = required_param('id', PARAM_INT);
 $download = optional_param('download', false, PARAM_BOOL);
@@ -78,23 +79,12 @@ if ($download && $report->type === "sql") {
 $reportclass->create_report();
 
 // Trigger view or export events as appropriate.
-$eventbase = [
-    'context' => $context,
-    'objectid' => $report->id,
-    'other' => [
-        'reportname' => format_string($report->name),
-        'source' => 'ui',
-    ],
-];
-
 $action = (!empty($download)) ? 'download' : 'view';
 
 // No download, build navigation header etc..
 if (!$download) {
     // Log that the report was viewed via UI.
-    $event = \block_configurable_reports\event\report_viewed::create($eventbase);
-    $event->add_record_snapshot('block_configurable_reports', $report);
-    $event->trigger();
+    cr_log_report_viewed($context, $report);
     $reportclass->check_filters_request();
     $reportname = format_string($report->name);
     $navlinks = [];
@@ -134,11 +124,7 @@ if (!$download) {
     core_php_time_limit::raise();
     raise_memory_limit(MEMORY_EXTRA);
     // Log export prior to sending output.
-    $exportevent = $eventbase;
-    $exportevent['other']['format'] = $format;
-    $event = \block_configurable_reports\event\report_exported::create($exportevent);
-    $event->add_record_snapshot('block_configurable_reports', $report);
-    $event->trigger();
+    cr_log_report_exported($context, $report, $format);
     $exportplugin = $CFG->dirroot . '/blocks/configurable_reports/export/' . $format . '/export.php';
     if (file_exists($exportplugin)) {
         require_once($exportplugin);
