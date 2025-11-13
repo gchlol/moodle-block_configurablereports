@@ -34,7 +34,10 @@ use block_configurable_reports\event\report_imported;
 use block_configurable_reports\event\report_duplicated;
 
 function cr_log_report_viewed($context, stdClass $report, string $source = 'ui'): void {
-    if (empty($report) || empty($report->id)) {
+    if (
+        empty($report) ||
+        empty($report->id)
+    ) {
         return;
     }
 
@@ -51,7 +54,10 @@ function cr_log_report_viewed($context, stdClass $report, string $source = 'ui')
 }
 
 function cr_log_report_exported($context, stdClass $report, string $format, string $source = 'ui'): void {
-    if (empty($report) || empty($report->id)) {
+    if (
+        empty($report) ||
+        empty($report->id)
+    ) {
         return;
     }
 
@@ -69,7 +75,10 @@ function cr_log_report_exported($context, stdClass $report, string $format, stri
 }
 
 function cr_log_report_created($context, stdClass $report, string $source = 'ui'): void {
-    if (empty($report) || empty($report->id)) {
+    if (
+        empty($report) ||
+        empty($report->id)
+    ) {
         return;
     }
 
@@ -98,8 +107,12 @@ function cr_log_report_created_from_data($context, int $reportid, stdClass $data
     cr_log_report_created($context, $report);
 }
 
-function cr_log_report_updated($context, stdClass $report, string $change, string $source = 'ui', ?stdClass $snapshot = null): void {
-    if (empty($report) || empty($report->id)) {
+function cr_log_report_updated($context, stdClass $report, string $change, string $source = 'ui', ?stdClass $snapshot = null
+    ): void {
+    if (
+        empty($report) ||
+        empty($report->id)
+    ) {
         return;
     }
 
@@ -117,7 +130,10 @@ function cr_log_report_updated($context, stdClass $report, string $change, strin
 }
 
 function cr_log_report_deleted($context, stdClass $report, string $source = 'ui'): void {
-    if (empty($report) || empty($report->id)) {
+    if (
+        empty($report) ||
+        empty($report->id)
+    ) {
         return;
     }
 
@@ -134,7 +150,10 @@ function cr_log_report_deleted($context, stdClass $report, string $source = 'ui'
 }
 
 function cr_log_report_imported($context, stdClass $report, string $source): void {
-    if (empty($report) || empty($report->id)) {
+    if (
+        empty($report) ||
+        empty($report->id)
+    ) {
         return;
     }
 
@@ -166,7 +185,10 @@ function cr_log_report_imported_by_id($context, int $reportid, string $source): 
 }
 
 function cr_log_report_duplicated($context, stdClass $newreport, stdClass $sourcereport, string $source = 'ui'): void {
-    if (empty($newreport) || empty($newreport->id)) {
+    if (
+        empty($newreport) ||
+        empty($newreport->id)
+    ) {
         return;
     }
 
@@ -207,6 +229,7 @@ function cr_log_report_duplicated_from_ids($context, int $newreportid, stdClass 
 function cr_prepare_report_duplicate(stdClass $report): stdClass {
     $duplicate = clone $report;
     unset($duplicate->id);
+
     return $duplicate;
 }
 
@@ -255,6 +278,7 @@ function cr_build_report_change_summary(stdClass $original, stdClass $newdata): 
         $newvalue = $newdata->$field;
         if ($meta['numeric']) {
             $haschanged = ((int) $newvalue !== (int) $oldvalue);
+
         } else {
             $haschanged = ($newvalue !== $oldvalue);
         }
@@ -282,8 +306,12 @@ function cr_build_report_change_summary(stdClass $original, stdClass $newdata): 
  * @param mixed $param
  */
 function cr_log_component_change(stdClass $report, string $messagekey, $param = null): void {
-    $context = ($report->courseid == SITEID) ? context_system::instance() : context_course::instance($report->courseid);
-    $change = ($param === null) ? get_string($messagekey, 'block_configurable_reports') : get_string($messagekey, 'block_configurable_reports', $param);
+    $context = ($report->courseid == SITEID)
+        ? context_system::instance()
+        : context_course::instance($report->courseid);
+    $change = ($param === null)
+        ? get_string($messagekey, 'block_configurable_reports')
+        : get_string($messagekey, 'block_configurable_reports', $param);
     cr_log_report_updated($context, $report, $change);
 }
 
@@ -322,7 +350,10 @@ function cr_log_sql_change(stdClass $reportconfig): void {
  */
 function cr_log_sql_change_if_needed(stdClass $reportconfig, stdClass $data, array $components): void {
     $oldsql = $components['customsql']['config']->querysql ?? '';
-    if (isset($data->querysql) && $data->querysql !== $oldsql) {
+    if (
+        isset($data->querysql) &&
+        $data->querysql !== $oldsql
+    ) {
         cr_log_sql_change($reportconfig);
     }
 }
