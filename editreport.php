@@ -26,6 +26,7 @@
 require_once("../../config.php");
 
 require_once($CFG->dirroot . "/blocks/configurable_reports/locallib.php");
+require_once($CFG->dirroot . "/blocks/configurable_reports/helperlib.php");
 
 $id = optional_param('id', 0, PARAM_INT);
 $courseid = optional_param('courseid', SITEID, PARAM_INT);
@@ -119,18 +120,19 @@ if (($show || $hide) && confirm_sesskey()) {
         throw new moodle_exception('cannotupdatereport', 'block_configurable_reports');
     }
     $action = ($visible) ? 'showed' : 'hidden';
+    cr_log_report_visibility_change($context, $report, (bool) $visible);
 
     header("Location: $CFG->wwwroot/blocks/configurable_reports/managereport.php?courseid=$courseid");
     die;
 }
 
 if ($duplicate && confirm_sesskey()) {
-    $newreport = $report;
-    unset($newreport->id);
+    $newreport = cr_prepare_report_duplicate($report);
     $newreport->name = get_string('copyasnoun') . ' ' . $newreport->name;
     if (!$newreportid = $DB->insert_record('block_configurable_reports', $newreport)) {
         throw new moodle_exception('cannotduplicate', 'block_configurable_reports');
     }
+    cr_log_report_duplicated_from_ids($context, $newreportid, $newreport, $report);
 
     header("Location: $CFG->wwwroot/blocks/configurable_reports/managereport.php?courseid=$courseid");
     die;
@@ -153,6 +155,7 @@ if ($delete && confirm_sesskey()) {
     }
 
     $DB->delete_records('block_configurable_reports', ['id' => $report->id]);
+    cr_log_report_deleted($context, $report);
     header("Location: $CFG->wwwroot/blocks/configurable_reports/managereport.php?courseid=$courseid");
     die;
 }
@@ -237,6 +240,7 @@ if ($editform->is_cancelled()) {
         if (!$lastid = $DB->insert_record('block_configurable_reports', $data)) {
             throw new moodle_exception('errorsavingreport', 'block_configurable_reports');
         }
+        cr_log_report_created_from_data($context, $lastid, $data);
 
         $reportclass = new $reportclassname($lastid);
         redirect(
@@ -250,6 +254,8 @@ if ($editform->is_cancelled()) {
         if (!$DB->update_record('block_configurable_reports', $data)) {
             throw new moodle_exception('errorsavingreport', 'block_configurable_reports');
         }
+        list($change, $updatedreport) = cr_build_report_change_summary($report, $data);
+        cr_log_report_updated($context, $updatedreport, $change, 'ui', $report);
 
         redirect(
             $CFG->wwwroot . '/blocks/configurable_reports/editcomp.php?id=' . $data->id . '&comp=' . $reportclass->components[0]

@@ -26,6 +26,7 @@
 require_once("../../config.php");
 
 require_once($CFG->dirroot . "/blocks/configurable_reports/locallib.php");
+require_once($CFG->dirroot . "/blocks/configurable_reports/helperlib.php");
 
 $id = required_param('id', PARAM_INT);
 $comp = required_param('comp', PARAM_ALPHA);
@@ -118,6 +119,7 @@ if (!$cid) {
         $components[$comp]['elements'] = $elements;
         $report->components = cr_serialize($components);
         $DB->update_record('block_configurable_reports', $report);
+        cr_log_component_reorder_or_delete($report, $comp, $pname, (bool) $delete);
         redirect(new moodle_url('/blocks/configurable_reports/editcomp.php', ['id' => $id, 'comp' => $comp]));
         exit;
     }
@@ -126,7 +128,6 @@ if (!$cid) {
 if (!$plugin || $plugin !== $pname) {
     throw new moodle_exception('nosuchplugin');
 }
-defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 require_once($CFG->dirroot . '/blocks/configurable_reports/components/' . $comp . '/' . $pname . '/plugin.class.php');
 $pluginclassname = 'plugin_' . $pname;
@@ -181,7 +182,7 @@ if (isset($pluginclass->form) && $pluginclass->form) {
             if (!$DB->update_record('block_configurable_reports', $report)) {
                 throw new moodle_exception('errorsaving');
             }
-
+            cr_log_component_change($report, 'event:changecomponentmodified', $comp);
             redirect(new moodle_url('/blocks/configurable_reports/editcomp.php', ['id' => $id, 'comp' => $comp]));
             exit;
 
@@ -207,7 +208,7 @@ if (isset($pluginclass->form) && $pluginclass->form) {
         if (!$DB->update_record('block_configurable_reports', $report)) {
             throw new moodle_exception('errorsaving');
         }
-
+        cr_log_component_change($report, 'event:changecomponentadded', $pname);
         redirect(new moodle_url('/blocks/configurable_reports/editcomp.php', ['id' => $id, 'comp' => $comp]));
         exit;
     }
@@ -261,4 +262,3 @@ if ($pluginclass->form) {
 }
 
 echo $OUTPUT->footer();
-

@@ -25,6 +25,7 @@
 
 require_once("../../config.php");
 require_once($CFG->dirroot . "/blocks/configurable_reports/locallib.php");
+require_once($CFG->dirroot . "/blocks/configurable_reports/helperlib.php");
 
 $id = required_param('id', PARAM_INT);
 $download = optional_param('download', false, PARAM_BOOL);
@@ -81,6 +82,7 @@ $action = (!empty($download)) ? 'download' : 'view';
 
 // No download, build navigation header etc..
 if (!$download) {
+    cr_log_report_viewed($context, $report);
     $reportclass->check_filters_request();
     $reportname = format_string($report->name);
     $navlinks = [];
@@ -119,6 +121,7 @@ if (!$download) {
     // Large exports are likely to take their time and memory.
     core_php_time_limit::raise();
     raise_memory_limit(MEMORY_EXTRA);
+    cr_log_report_exported($context, $report, $format);
     $exportplugin = $CFG->dirroot . '/blocks/configurable_reports/export/' . $format . '/export.php';
     if (file_exists($exportplugin)) {
         require_once($exportplugin);

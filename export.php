@@ -26,6 +26,7 @@
 require_once("../../config.php");
 
 require_once($CFG->dirroot . "/blocks/configurable_reports/locallib.php");
+require_once($CFG->dirroot . "/blocks/configurable_reports/helperlib.php");
 
 $id = required_param('id', PARAM_INT);
 
@@ -77,6 +78,7 @@ foreach ($reportdata as $key => $value) {
 }
 
 $data .= "</report>";
+cr_log_report_exported($context, $report, 'xml');
 
 if (strpos($CFG->wwwroot, 'https://') === 0) {
     // Https sites - watch out for IE! KB812935 and KB316431.

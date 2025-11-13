@@ -23,6 +23,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+defined('MOODLE_INTERNAL') || die();
+require_once(__DIR__ . '/../../helperlib.php');
+
 /**
  * Class component_customsql
  *
@@ -63,6 +66,7 @@ class component_customsql extends component_base {
             $data = $cform->get_data();
             // Function cr_serialize() will add slashes.
             $components = cr_unserialize($this->config->components);
+            cr_log_sql_change_if_needed($this->config, $data, $components);
             $components['customsql']['config'] = $data;
             $this->config->components = cr_serialize($components);
             $DB->update_record('block_configurable_reports', $this->config);
