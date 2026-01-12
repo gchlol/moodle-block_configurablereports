@@ -138,7 +138,14 @@ function cr_log_report_created_from_data($context, int $reportid, stdClass $data
  * @param string $source UI or API source
  * @param stdClass|null $snapshot Optional snapshot to attach
  */
-function cr_log_report_updated($context, stdClass $report, string $change, string $source = 'ui', ?stdClass $snapshot = null): void {
+function cr_log_report_updated(
+    $context,
+    stdClass $report,
+    string $change,
+    string $source = 'ui',
+    ?stdClass
+    $snapshot = null
+): void {
     if (
         empty($report) ||
         empty($report->id)

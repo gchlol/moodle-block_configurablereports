@@ -23,7 +23,7 @@ use moodle_url;
 use stdClass;
 
 /**
- * Event triggered when a configurable report is exported.
+ * Event triggered when configurable report is exported.
  *
  * @package     block_configurable_reports
  * @copyright   2025 Gold Coast Health
@@ -47,7 +47,7 @@ class report_exported extends base {
     }
 
     /**
-     * Describes event in human-readable way.
+     * Describes event.
      *
      * @return string
      */
