@@ -25,7 +25,7 @@
 
 require_once("../../config.php");
 require_once($CFG->dirroot . "/blocks/configurable_reports/locallib.php");
-require_once($CFG->dirroot . "/blocks/configurable_reports/helperlib.php");
+require_once($CFG->dirroot . "/blocks/configurable_reports/gchlolhelper.php");
 
 $id = required_param('id', PARAM_INT);
 $download = optional_param('download', false, PARAM_BOOL);

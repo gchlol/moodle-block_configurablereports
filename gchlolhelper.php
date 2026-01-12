@@ -246,7 +246,7 @@ function cr_log_report_visibility_change($context, stdClass $report, bool $visib
     $changemsg = $visible
         ? get_string('event:changevisibilityshown', 'block_configurable_reports')
         : get_string('event:changevisibilityhidden', 'block_configurable_reports');
-    cr_log_report_updated($context, $updatedreport, $changemsg, 'ui', $report);
+    cr_log_report_updated($context, $updatedreport, $changemsg, 'ui', $updatedreport);
 }
 
 /**
@@ -289,8 +289,10 @@ function cr_build_report_change_summary(stdClass $original, stdClass $newdata): 
     }
 
     $updatedreport = clone $original;
-    if (isset($newdata->name)) {
-        $updatedreport->name = $newdata->name;
+    foreach (array_keys($fieldmap) as $field) {
+        if (isset($newdata->$field)) {
+            $updatedreport->$field = $newdata->$field;
+        }
     }
 
     $change = !empty($changes) ? implode(', ', $changes) : get_string('event:changegeneric', 'block_configurable_reports');

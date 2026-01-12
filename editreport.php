@@ -26,7 +26,7 @@
 require_once("../../config.php");
 
 require_once($CFG->dirroot . "/blocks/configurable_reports/locallib.php");
-require_once($CFG->dirroot . "/blocks/configurable_reports/helperlib.php");
+require_once($CFG->dirroot . "/blocks/configurable_reports/gchlolhelper.php");
 
 $id = optional_param('id', 0, PARAM_INT);
 $courseid = optional_param('courseid', SITEID, PARAM_INT);
@@ -254,8 +254,9 @@ if ($editform->is_cancelled()) {
         if (!$DB->update_record('block_configurable_reports', $data)) {
             throw new moodle_exception('errorsavingreport', 'block_configurable_reports');
         }
-        list($change, $updatedreport) = cr_build_report_change_summary($report, $data);
-        cr_log_report_updated($context, $updatedreport, $change, 'ui', $report);
+        [$change] = cr_build_report_change_summary($report, $data);
+        $updatedreport = $DB->get_record('block_configurable_reports', ['id' => $data->id]);
+        cr_log_report_updated($context, $updatedreport, $change, 'ui', $updatedreport);
 
         redirect(
             $CFG->wwwroot . '/blocks/configurable_reports/editcomp.php?id=' . $data->id . '&comp=' . $reportclass->components[0]

@@ -25,7 +25,7 @@
 
 require_once("../../config.php");
 require_once($CFG->dirroot . "/blocks/configurable_reports/locallib.php");
-require_once($CFG->dirroot . "/blocks/configurable_reports/helperlib.php");
+require_once($CFG->dirroot . "/blocks/configurable_reports/gchlolhelper.php");
 require_once('import_form.php');
 
 $courseid = optional_param('courseid', SITEID, PARAM_INT);
