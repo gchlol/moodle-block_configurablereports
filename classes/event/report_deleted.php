@@ -20,6 +20,7 @@ defined('MOODLE_INTERNAL') || die();
 
 use core\event\base;
 use moodle_url;
+use stdClass;
 
 /**
  * Event triggered when a configurable report is deleted.
@@ -51,11 +52,10 @@ class report_deleted extends base {
      * @return string
      */
     public function get_description(): string {
-        $data = (object) [
-            'userid' => $this->userid,
-            'reportname' => $this->other['reportname'] ?? '',
-            'objectid' => $this->objectid,
-        ];
+        $data = new stdClass();
+        $data->userid = $this->userid;
+        $data->reportname = $this->other['reportname'] ?? '';
+        $data->objectid = $this->objectid;
         return get_string('event:reportdeleted:desc', 'block_configurable_reports', $data);
     }
 

@@ -20,6 +20,7 @@ defined('MOODLE_INTERNAL') || die();
 
 use core\event\base;
 use moodle_url;
+use stdClass;
 
 /**
  * Event triggered when a configurable report is updated.
@@ -51,12 +52,11 @@ class report_updated extends base {
      * @return string
      */
     public function get_description(): string {
-        $data = (object) [
-            'userid' => $this->userid,
-            'reportname' => $this->other['reportname'] ?? '',
-            'objectid' => $this->objectid,
-            'change' => $this->other['change'] ?? get_string('event:changegeneric', 'block_configurable_reports'),
-        ];
+        $data = new stdClass();
+        $data->userid = $this->userid;
+        $data->reportname = $this->other['reportname'] ?? '';
+        $data->objectid = $this->objectid;
+        $data->change = $this->other['change'] ?? get_string('event:changegeneric', 'block_configurable_reports');
         return get_string('event:reportupdated:desc', 'block_configurable_reports', $data);
     }
 

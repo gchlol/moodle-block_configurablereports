@@ -121,7 +121,7 @@ if (!$cid) {
         if (!$DB->update_record('block_configurable_reports', $report)) {
             throw new moodle_exception('errorsavingcomponent', 'block_configurable_reports');
         }
-        cr_log_component_reorder_or_delete($report, $comp, $pname, (bool) $delete);
+        cr_log_component_reorder_or_delete($report, $comp, $pname, $delete);
         redirect(new moodle_url('/blocks/configurable_reports/editcomp.php', ['id' => $id, 'comp' => $comp]));
         exit;
     }

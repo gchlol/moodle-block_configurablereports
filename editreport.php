@@ -120,7 +120,7 @@ if (($show || $hide) && confirm_sesskey()) {
         throw new moodle_exception('cannotupdatereport', 'block_configurable_reports');
     }
     $action = ($visible) ? 'showed' : 'hidden';
-    cr_log_report_visibility_change($context, $report, (bool) $visible);
+    cr_log_report_visibility_change($context, $report, $visible);
 
     header("Location: $CFG->wwwroot/blocks/configurable_reports/managereport.php?courseid=$courseid");
     die;

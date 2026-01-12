@@ -20,6 +20,7 @@ defined('MOODLE_INTERNAL') || die();
 
 use core\event\base;
 use moodle_url;
+use stdClass;
 
 /**
  * Event triggered when a configurable report is duplicated.
@@ -51,13 +52,12 @@ class report_duplicated extends base {
      * @return string
      */
     public function get_description(): string {
-        $data = (object) [
-            'userid' => $this->userid,
-            'sourcename' => $this->other['sourcename'] ?? '',
-            'sourceid' => $this->other['sourceid'] ?? 0,
-            'reportname' => $this->other['reportname'] ?? '',
-            'objectid' => $this->objectid,
-        ];
+        $data = new stdClass();
+        $data->userid = $this->userid;
+        $data->sourcename = $this->other['sourcename'] ?? '';
+        $data->sourceid = $this->other['sourceid'] ?? 0;
+        $data->reportname = $this->other['reportname'] ?? '';
+        $data->objectid = $this->objectid;
         return get_string('event:reportduplicated:desc', 'block_configurable_reports', $data);
     }
 

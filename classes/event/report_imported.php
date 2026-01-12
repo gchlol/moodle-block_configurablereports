@@ -20,6 +20,7 @@ defined('MOODLE_INTERNAL') || die();
 
 use core\event\base;
 use moodle_url;
+use stdClass;
 
 /**
  * Event triggered when a configurable report is imported.
@@ -51,12 +52,11 @@ class report_imported extends base {
      * @return string
      */
     public function get_description(): string {
-        $data = (object) [
-            'userid' => $this->userid,
-            'reportname' => $this->other['reportname'] ?? '',
-            'objectid' => $this->objectid,
-            'source' => $this->other['source'] ?? 'unknown',
-        ];
+        $data = new stdClass();
+        $data->userid = $this->userid;
+        $data->reportname = $this->other['reportname'] ?? '';
+        $data->objectid = $this->objectid;
+        $data->source = $this->other['source'] ?? 'unknown';
         return get_string('event:reportimported:desc', 'block_configurable_reports', $data);
     }
 

@@ -33,6 +33,13 @@ use block_configurable_reports\event\report_deleted;
 use block_configurable_reports\event\report_imported;
 use block_configurable_reports\event\report_duplicated;
 
+/**
+ * Log report was viewed.
+ *
+ * @param context $context
+ * @param stdClass $report
+ * @param string $source UI or API source
+ */
 function cr_log_report_viewed($context, stdClass $report, string $source = 'ui'): void {
     if (
         empty($report) ||
@@ -53,6 +60,14 @@ function cr_log_report_viewed($context, stdClass $report, string $source = 'ui')
     $event->trigger();
 }
 
+/**
+ * Log report was exported in given format.
+ *
+ * @param context $context
+ * @param stdClass $report
+ * @param string $format Export format
+ * @param string $source UI or API source
+ */
 function cr_log_report_exported($context, stdClass $report, string $format, string $source = 'ui'): void {
     if (
         empty($report) ||
@@ -74,6 +89,13 @@ function cr_log_report_exported($context, stdClass $report, string $format, stri
     $event->trigger();
 }
 
+/**
+ * Log report created.
+ *
+ * @param context $context
+ * @param stdClass $report
+ * @param string $source UI or API source
+ */
 function cr_log_report_created($context, stdClass $report, string $source = 'ui'): void {
     if (
         empty($report) ||
@@ -107,8 +129,16 @@ function cr_log_report_created_from_data($context, int $reportid, stdClass $data
     cr_log_report_created($context, $report);
 }
 
-function cr_log_report_updated($context, stdClass $report, string $change, string $source = 'ui', ?stdClass $snapshot = null
-    ): void {
+/**
+ * Log report updated with change summary.
+ *
+ * @param context $context
+ * @param stdClass $report Updated report record
+ * @param string $change Human-readable change summary
+ * @param string $source UI or API source
+ * @param stdClass|null $snapshot Optional snapshot to attach
+ */
+function cr_log_report_updated($context, stdClass $report, string $change, string $source = 'ui', ?stdClass $snapshot = null): void {
     if (
         empty($report) ||
         empty($report->id)
@@ -129,6 +159,13 @@ function cr_log_report_updated($context, stdClass $report, string $change, strin
     $event->trigger();
 }
 
+/**
+ * Log report deleted.
+ *
+ * @param context $context
+ * @param stdClass $report Report being deleted
+ * @param string $source UI or API source
+ */
 function cr_log_report_deleted($context, stdClass $report, string $source = 'ui'): void {
     if (
         empty($report) ||
@@ -149,6 +186,13 @@ function cr_log_report_deleted($context, stdClass $report, string $source = 'ui'
     $event->trigger();
 }
 
+/**
+ * Log report imported.
+ *
+ * @param context $context
+ * @param stdClass $report Newly imported report
+ * @param string $source Import source identifier
+ */
 function cr_log_report_imported($context, stdClass $report, string $source): void {
     if (
         empty($report) ||
@@ -184,6 +228,14 @@ function cr_log_report_imported_by_id($context, int $reportid, string $source): 
     }
 }
 
+/**
+ * Log report duplicated.
+ *
+ * @param context $context
+ * @param stdClass $newreport New report record
+ * @param stdClass $sourcereport Source report record
+ * @param string $source UI or API source
+ */
 function cr_log_report_duplicated($context, stdClass $newreport, stdClass $sourcereport, string $source = 'ui'): void {
     if (
         empty($newreport) ||
@@ -221,7 +273,7 @@ function cr_log_report_duplicated_from_ids($context, int $newreportid, stdClass 
 }
 
 /**
- * Prepare a duplicate report object for insertion.
+ * Prepare duplicate report object for insertion.
  *
  * @param stdClass $report
  * @return stdClass
@@ -234,7 +286,7 @@ function cr_prepare_report_duplicate(stdClass $report): stdClass {
 }
 
 /**
- * Log visibility change as a report update.
+ * Log visibility change as report update.
  *
  * @param context $context
  * @param stdClass $report
@@ -250,7 +302,7 @@ function cr_log_report_visibility_change($context, stdClass $report, bool $visib
 }
 
 /**
- * Build a change summary for report updates.
+ * Build change summary for report updates.
  *
  * @param stdClass $original
  * @param stdClass $newdata
@@ -277,7 +329,7 @@ function cr_build_report_change_summary(stdClass $original, stdClass $newdata): 
         $oldvalue = $original->$field;
         $newvalue = $newdata->$field;
         if ($meta['numeric']) {
-            $haschanged = ((int) $newvalue !== (int) $oldvalue);
+            $haschanged = (intval($newvalue) !== intval($oldvalue));
 
         } else {
             $haschanged = ($newvalue !== $oldvalue);
@@ -302,7 +354,7 @@ function cr_build_report_change_summary(stdClass $original, stdClass $newdata): 
 }
 
 /**
- * Log a component change message.
+ * Log component change message.
  *
  * @param stdClass $report
  * @param string $message
