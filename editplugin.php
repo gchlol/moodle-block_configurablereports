@@ -118,7 +118,9 @@ if (!$cid) {
         }
         $components[$comp]['elements'] = $elements;
         $report->components = cr_serialize($components);
-        $DB->update_record('block_configurable_reports', $report);
+        if (!$DB->update_record('block_configurable_reports', $report)) {
+            throw new moodle_exception('errorsavingcomponent', 'block_configurable_reports');
+        }
         cr_log_component_reorder_or_delete($report, $comp, $pname, (bool) $delete);
         redirect(new moodle_url('/blocks/configurable_reports/editcomp.php', ['id' => $id, 'comp' => $comp]));
         exit;

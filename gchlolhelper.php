@@ -254,7 +254,7 @@ function cr_log_report_visibility_change($context, stdClass $report, bool $visib
  *
  * @param stdClass $original
  * @param stdClass $newdata
- * @return array [string $change, stdClass $updatedreport]
+ * @return array [string $change, stdClass $updatedreport, bool $haschanges]
  */
 function cr_build_report_change_summary(stdClass $original, stdClass $newdata): array {
     $changes = [];
@@ -295,9 +295,10 @@ function cr_build_report_change_summary(stdClass $original, stdClass $newdata): 
         }
     }
 
-    $change = !empty($changes) ? implode(', ', $changes) : get_string('event:changegeneric', 'block_configurable_reports');
+    $haschanges = !empty($changes);
+    $change = $haschanges ? implode(', ', $changes) : get_string('event:changegeneric', 'block_configurable_reports');
 
-    return [$change, $updatedreport];
+    return [$change, $updatedreport, $haschanges];
 }
 
 /**

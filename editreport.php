@@ -254,9 +254,12 @@ if ($editform->is_cancelled()) {
         if (!$DB->update_record('block_configurable_reports', $data)) {
             throw new moodle_exception('errorsavingreport', 'block_configurable_reports');
         }
-        [$change] = cr_build_report_change_summary($report, $data);
+        [$change, , $haschanges] = cr_build_report_change_summary($report, $data);
         $updatedreport = $DB->get_record('block_configurable_reports', ['id' => $data->id]);
-        cr_log_report_updated($context, $updatedreport, $change, 'ui', $updatedreport);
+        if ($haschanges) {
+            $snapshot = $updatedreport ?? $data;
+            cr_log_report_updated($context, $snapshot, $change, 'ui', $snapshot);
+        }
 
         redirect(
             $CFG->wwwroot . '/blocks/configurable_reports/editcomp.php?id=' . $data->id . '&comp=' . $reportclass->components[0]

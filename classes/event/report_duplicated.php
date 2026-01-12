@@ -36,10 +36,20 @@ class report_duplicated extends base {
         $this->data['objecttable'] = 'block_configurable_reports';
     }
 
+    /**
+     * Returns localized event name.
+     *
+     * @return string
+     */
     public static function get_name(): string {
         return get_string('event:reportduplicated', 'block_configurable_reports');
     }
 
+    /**
+     * Describes event in human-readable way.
+     *
+     * @return string
+     */
     public function get_description(): string {
         $data = (object) [
             'userid' => $this->userid,
@@ -51,6 +61,11 @@ class report_duplicated extends base {
         return get_string('event:reportduplicated:desc', 'block_configurable_reports', $data);
     }
 
+    /**
+     * Returns URL related to event context.
+     *
+     * @return moodle_url
+     */
     public function get_url(): moodle_url {
         return new moodle_url('/blocks/configurable_reports/editreport.php', ['id' => $this->objectid]);
     }

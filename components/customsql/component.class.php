@@ -69,10 +69,10 @@ class component_customsql extends component_base {
             $oldsql = $components['customsql']['config']->querysql ?? '';
             $components['customsql']['config'] = $data;
             $this->config->components = cr_serialize($components);
-            $DB->update_record('block_configurable_reports', $this->config);
+            $sqlchanged = ($data->querysql ?? '') !== $oldsql;
             if (
-                isset($data->querysql) &&
-                $data->querysql !== $oldsql
+                $DB->update_record('block_configurable_reports', $this->config) &&
+                $sqlchanged
             ) {
                 cr_log_sql_change($this->config);
             }

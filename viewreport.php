@@ -82,7 +82,6 @@ $action = (!empty($download)) ? 'download' : 'view';
 
 // No download, build navigation header etc..
 if (!$download) {
-    cr_log_report_viewed($context, $report);
     $reportclass->check_filters_request();
     $reportname = format_string($report->name);
     $navlinks = [];
@@ -116,15 +115,17 @@ if (!$download) {
 
     // Print the report HTML.
     $reportclass->print_report_page($PAGE);
+    cr_log_report_viewed($context, $report);
 
 } else {
     // Large exports are likely to take their time and memory.
     core_php_time_limit::raise();
     raise_memory_limit(MEMORY_EXTRA);
-    cr_log_report_exported($context, $report, $format);
     $exportplugin = $CFG->dirroot . '/blocks/configurable_reports/export/' . $format . '/export.php';
     if (file_exists($exportplugin)) {
         require_once($exportplugin);
+        // Log before exporting, as exporters may exit after sending the file.
+        cr_log_report_exported($context, $report, $format);
         export_report($reportclass->finalreport);
     }
     die;
