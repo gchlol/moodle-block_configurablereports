@@ -23,10 +23,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use block_configurable_reports\local\util\event_util;
+
 require_once("../../config.php");
 
 require_once($CFG->dirroot . "/blocks/configurable_reports/locallib.php");
-require_once($CFG->dirroot . "/blocks/configurable_reports/gchlolhelper.php");
 
 $id = required_param('id', PARAM_INT);
 
@@ -78,7 +79,7 @@ foreach ($reportdata as $key => $value) {
 }
 
 $data .= "</report>";
-cr_log_report_exported($context, $report, 'xml');
+event_util::log_report_exported($context, $report, 'xml');
 
 if (strpos($CFG->wwwroot, 'https://') === 0) {
     // Https sites - watch out for IE! KB812935 and KB316431.

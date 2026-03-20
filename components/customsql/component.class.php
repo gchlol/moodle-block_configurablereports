@@ -23,8 +23,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use block_configurable_reports\local\util\event_util;
+
 defined('MOODLE_INTERNAL') || die();
-require_once(__DIR__ . '/../../gchlolhelper.php');
 
 /**
  * Class component_customsql
@@ -74,7 +75,7 @@ class component_customsql extends component_base {
                 $DB->update_record('block_configurable_reports', $this->config) &&
                 $sqlchanged
             ) {
-                cr_log_sql_change($this->config);
+                event_util::log_sql_change($this->config);
             }
         }
     }

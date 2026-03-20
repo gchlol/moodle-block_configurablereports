@@ -23,10 +23,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use block_configurable_reports\local\util\event_util;
+
 require_once("../../config.php");
 
 require_once($CFG->dirroot . "/blocks/configurable_reports/locallib.php");
-require_once($CFG->dirroot . "/blocks/configurable_reports/gchlolhelper.php");
 
 $id = optional_param('id', 0, PARAM_INT);
 $courseid = optional_param('courseid', SITEID, PARAM_INT);
@@ -120,19 +121,24 @@ if (($show || $hide) && confirm_sesskey()) {
         throw new moodle_exception('cannotupdatereport', 'block_configurable_reports');
     }
     $action = ($visible) ? 'showed' : 'hidden';
-    cr_log_report_visibility_change($context, $report, $visible);
+    event_util::log_report_visibility_change($context, $report, $visible);
 
     header("Location: $CFG->wwwroot/blocks/configurable_reports/managereport.php?courseid=$courseid");
     die;
 }
 
 if ($duplicate && confirm_sesskey()) {
-    $newreport = cr_prepare_report_duplicate($report);
+    $newreport = event_util::prepare_report_duplicate($report);
     $newreport->name = get_string('copyasnoun') . ' ' . $newreport->name;
     if (!$newreportid = $DB->insert_record('block_configurable_reports', $newreport)) {
         throw new moodle_exception('cannotduplicate', 'block_configurable_reports');
     }
-    cr_log_report_duplicated_from_ids($context, $newreportid, $newreport, $report);
+    event_util::log_report_duplicated_from_ids(
+        $context,
+        $newreportid,
+        $newreport,
+        $report
+    );
 
     header("Location: $CFG->wwwroot/blocks/configurable_reports/managereport.php?courseid=$courseid");
     die;
@@ -155,7 +161,7 @@ if ($delete && confirm_sesskey()) {
     }
 
     $DB->delete_records('block_configurable_reports', ['id' => $report->id]);
-    cr_log_report_deleted($context, $report);
+    event_util::log_report_deleted($context, $report);
     header("Location: $CFG->wwwroot/blocks/configurable_reports/managereport.php?courseid=$courseid");
     die;
 }
@@ -240,7 +246,7 @@ if ($editform->is_cancelled()) {
         if (!$lastid = $DB->insert_record('block_configurable_reports', $data)) {
             throw new moodle_exception('errorsavingreport', 'block_configurable_reports');
         }
-        cr_log_report_created_from_data($context, $lastid, $data);
+        event_util::log_report_created_from_data($context, $lastid, $data);
 
         $reportclass = new $reportclassname($lastid);
         redirect(
@@ -254,11 +260,20 @@ if ($editform->is_cancelled()) {
         if (!$DB->update_record('block_configurable_reports', $data)) {
             throw new moodle_exception('errorsavingreport', 'block_configurable_reports');
         }
-        [$change, , $haschanges] = cr_build_report_change_summary($report, $data);
+        [$change, , $haschanges] = event_util::build_report_change_summary(
+            $report,
+            $data
+        );
         $updatedreport = $DB->get_record('block_configurable_reports', ['id' => $data->id]);
         if ($haschanges) {
             $snapshot = $updatedreport ?? $data;
-            cr_log_report_updated($context, $snapshot, $change, 'ui', $snapshot);
+            event_util::log_report_updated(
+                $context,
+                $snapshot,
+                $change,
+                'ui',
+                $snapshot
+            );
         }
 
         redirect(

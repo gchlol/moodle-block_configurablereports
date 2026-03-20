@@ -23,10 +23,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use block_configurable_reports\local\util\event_util;
+
 require_once("../../config.php");
 
 require_once($CFG->dirroot . "/blocks/configurable_reports/locallib.php");
-require_once($CFG->dirroot . "/blocks/configurable_reports/gchlolhelper.php");
 
 $id = required_param('id', PARAM_INT);
 $comp = required_param('comp', PARAM_ALPHA);
@@ -121,7 +122,12 @@ if (!$cid) {
         if (!$DB->update_record('block_configurable_reports', $report)) {
             throw new moodle_exception('errorsavingcomponent', 'block_configurable_reports');
         }
-        cr_log_component_reorder_or_delete($report, $comp, $pname, $delete);
+        event_util::log_component_reorder_or_delete(
+            $report,
+            $comp,
+            $pname,
+            $delete
+        );
         redirect(new moodle_url('/blocks/configurable_reports/editcomp.php', ['id' => $id, 'comp' => $comp]));
         exit;
     }
@@ -184,7 +190,11 @@ if (isset($pluginclass->form) && $pluginclass->form) {
             if (!$DB->update_record('block_configurable_reports', $report)) {
                 throw new moodle_exception('errorsaving');
             }
-            cr_log_component_change($report, 'event:changecomponentmodified', $comp);
+            event_util::log_component_change(
+                $report,
+                'event:changecomponentmodified',
+                $comp
+            );
             redirect(new moodle_url('/blocks/configurable_reports/editcomp.php', ['id' => $id, 'comp' => $comp]));
             exit;
 
@@ -210,7 +220,11 @@ if (isset($pluginclass->form) && $pluginclass->form) {
         if (!$DB->update_record('block_configurable_reports', $report)) {
             throw new moodle_exception('errorsaving');
         }
-        cr_log_component_change($report, 'event:changecomponentadded', $pname);
+        event_util::log_component_change(
+            $report,
+            'event:changecomponentadded',
+            $pname
+        );
         redirect(new moodle_url('/blocks/configurable_reports/editcomp.php', ['id' => $id, 'comp' => $comp]));
         exit;
     }

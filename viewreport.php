@@ -23,9 +23,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use block_configurable_reports\local\util\event_util;
+
 require_once("../../config.php");
 require_once($CFG->dirroot . "/blocks/configurable_reports/locallib.php");
-require_once($CFG->dirroot . "/blocks/configurable_reports/gchlolhelper.php");
 
 $id = required_param('id', PARAM_INT);
 $download = optional_param('download', false, PARAM_BOOL);
@@ -115,7 +116,7 @@ if (!$download) {
 
     // Print the report HTML.
     $reportclass->print_report_page($PAGE);
-    cr_log_report_viewed($context, $report);
+    event_util::log_report_viewed($context, $report);
 
 } else {
     // Large exports are likely to take their time and memory.
@@ -125,7 +126,7 @@ if (!$download) {
     if (file_exists($exportplugin)) {
         require_once($exportplugin);
         // Log before exporting, as exporters may exit after sending the file.
-        cr_log_report_exported($context, $report, $format);
+        event_util::log_report_exported($context, $report, $format);
         export_report($reportclass->finalreport);
     }
     die;
