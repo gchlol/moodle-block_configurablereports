@@ -34,6 +34,7 @@ use block_configurable_reports\event\report_exported;
 use block_configurable_reports\event\report_imported;
 use block_configurable_reports\event\report_updated;
 use block_configurable_reports\event\report_viewed;
+use core\context;
 use context_course;
 use context_system;
 use stdClass;
@@ -117,8 +118,18 @@ final class event_util {
      * @return void
      */
     public static function log_report_created_from_data($context, int $reportid, stdClass $data): void {
+        global $DB;
+
+        // Prefer the persisted record so event snapshot fields exactly match DB schema.
+        if ($persistedreport = $DB->get_record('block_configurable_reports', ['id' => $reportid])) {
+            self::log_report_created($context, $persistedreport);
+            return;
+        }
+
+        // Fallback path if record lookup unexpectedly fails.
         $report = clone $data;
         $report->id = $reportid;
+        $report->lastexecutiontime = $report->lastexecutiontime ?? 0;
         self::log_report_created($context, $report);
     }
 
