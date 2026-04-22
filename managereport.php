@@ -62,9 +62,9 @@ if ($importurl) {
         throw new moodle_exception('errorimporting');
     }
 
-    if ($newid = cr_import_xml($xml, $course)) {
-        // GCHLOL GS-946
-        \block_configurable_reports\event\report_imported::create_from_id($context, $newid, 'url')?->trigger();
+    if ($newreport = cr_import_xml($xml, $course)) {
+        // GCHLOL: GS-946.
+        \block_configurable_reports\event\report_imported::create_from_report($context, $newreport, 'url')->trigger();
         redirect(
             "$CFG->wwwroot/blocks/configurable_reports/managereport.php?courseid={$course->id}",
             get_string('reportcreated', 'block_configurable_reports')
@@ -85,9 +85,9 @@ if ($importpath) {
         $response = json_decode($rawresponse);
         $xml = base64_decode($response->content);
 
-        if ($newid = cr_import_xml($xml, $course)) {
-            // GCHLOL GS-946
-            \block_configurable_reports\event\report_imported::create_from_id($context, $newid, 'repository')?->trigger();
+        if ($newreport = cr_import_xml($xml, $course)) {
+            // GCHLOL: GS-946.
+            \block_configurable_reports\event\report_imported::create_from_report($context, $newreport, 'repository')->trigger();
             // Exit point
             redirect(
                 new moodle_url(
@@ -106,9 +106,9 @@ $mform = new import_form(null, $course->id);
 
 if ($data = $mform->get_data()) {
     if ($xml = $mform->get_file_content('userfile')) {
-        if ($newid = cr_import_xml($xml, $course)) {
-            // GCHLOL GS-946
-            \block_configurable_reports\event\report_imported::create_from_id($context, $newid, 'upload')?->trigger();
+        if ($newreport = cr_import_xml($xml, $course)) {
+            // GCHLOL: GS-946.
+            \block_configurable_reports\event\report_imported::create_from_report($context, $newreport, 'upload')->trigger();
             redirect(
                 "$CFG->wwwroot/blocks/configurable_reports/managereport.php?courseid={$course->id}",
                 get_string('reportcreated', 'block_configurable_reports')

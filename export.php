@@ -77,7 +77,7 @@ foreach ($reportdata as $key => $value) {
 }
 
 $data .= "</report>";
-// GCHLOL GS-946
+// GCHLOL: GS-946.
 \block_configurable_reports\event\report_exported::create_from_report($context, $report, 'xml')->trigger();
 
 if (strpos($CFG->wwwroot, 'https://') === 0) {

@@ -63,7 +63,7 @@ class component_customsql extends component_base {
             $data = $cform->get_data();
             // Function cr_serialize() will add slashes.
             $components = cr_unserialize($this->config->components);
-            // GCHLOL GS-946
+            // GCHLOL: GS-946.
             $oldsql = $components['customsql']['config']->querysql ?? '';
             $components['customsql']['config'] = $data;
             $this->config->components = cr_serialize($components);

@@ -64,23 +64,6 @@ class report_imported extends base {
     }
 
     /**
-     * Build event by looking up the persisted record; returns null if missing.
-     *
-     * @param context $context
-     * @param int $reportid
-     * @param string $source
-     * @return \core\event\base|null
-     */
-    public static function create_from_id(context $context, int $reportid, string $source): ?self {
-        global $DB;
-
-        if ($newreport = $DB->get_record('block_configurable_reports', ['id' => $reportid])) {
-            return self::create_from_report($context, $newreport, $source);
-        }
-        return null;
-    }
-
-    /**
      * Returns localized event name.
      *
      * @return string

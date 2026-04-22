@@ -119,7 +119,7 @@ if (($show || $hide) && confirm_sesskey()) {
         throw new moodle_exception('cannotupdatereport', 'block_configurable_reports');
     }
     $action = ($visible) ? 'showed' : 'hidden';
-    // GCHLOL GS-946
+    // GCHLOL: GS-946.
     \block_configurable_reports\local\util\event_util::log_report_visibility_change($context, $report, $visible);
 
     header("Location: $CFG->wwwroot/blocks/configurable_reports/managereport.php?courseid=$courseid");
@@ -127,13 +127,13 @@ if (($show || $hide) && confirm_sesskey()) {
 }
 
 if ($duplicate && confirm_sesskey()) {
-    // GCHLOL GS-946
+    // GCHLOL: GS-946.
     $newreport = \block_configurable_reports\local\util\event_util::prepare_report_duplicate($report);
     $newreport->name = get_string('copyasnoun') . ' ' . $newreport->name;
     if (!$newreportid = $DB->insert_record('block_configurable_reports', $newreport)) {
         throw new moodle_exception('cannotduplicate', 'block_configurable_reports');
     }
-    // GCHLOL GS-946
+    // GCHLOL: GS-946.
     \block_configurable_reports\event\report_duplicated::create_from_ids(
         $context,
         $newreportid,
@@ -162,7 +162,7 @@ if ($delete && confirm_sesskey()) {
     }
 
     $DB->delete_records('block_configurable_reports', ['id' => $report->id]);
-    // GCHLOL GS-946
+    // GCHLOL: GS-946.
     \block_configurable_reports\event\report_deleted::create_from_report($context, $report)->trigger();
     header("Location: $CFG->wwwroot/blocks/configurable_reports/managereport.php?courseid=$courseid");
     die;
@@ -248,7 +248,7 @@ if ($editform->is_cancelled()) {
         if (!$lastid = $DB->insert_record('block_configurable_reports', $data)) {
             throw new moodle_exception('errorsavingreport', 'block_configurable_reports');
         }
-        // GCHLOL GS-946
+        // GCHLOL: GS-946.
         \block_configurable_reports\event\report_created::create_from_data($context, $lastid, $data)->trigger();
 
         $reportclass = new $reportclassname($lastid);
@@ -263,20 +263,16 @@ if ($editform->is_cancelled()) {
         if (!$DB->update_record('block_configurable_reports', $data)) {
             throw new moodle_exception('errorsavingreport', 'block_configurable_reports');
         }
-        // GCHLOL GS-946
-        [$change, , $haschanges] = \block_configurable_reports\local\util\event_util::build_report_change_summary(
+        // GCHLOL: GS-946.
+        [$change, $updatedreport, $haschanges] = \block_configurable_reports\local\util\event_util::build_report_change_summary(
             $report,
             $data
         );
-        $updatedreport = $DB->get_record('block_configurable_reports', ['id' => $data->id]);
         if ($haschanges) {
-            $snapshot = $updatedreport ?? $data;
             \block_configurable_reports\event\report_updated::create_from_report(
                 $context,
-                $snapshot,
-                $change,
-                'ui',
-                $snapshot
+                $updatedreport,
+                $change
             )->trigger();
         }
 

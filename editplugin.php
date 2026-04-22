@@ -120,7 +120,7 @@ if (!$cid) {
         if (!$DB->update_record('block_configurable_reports', $report)) {
             throw new moodle_exception('errorsavingcomponent', 'block_configurable_reports');
         }
-        // GCHLOL GS-946
+        // GCHLOL: GS-946.
         \block_configurable_reports\local\util\event_util::log_component_reorder_or_delete(
             $report,
             $comp,
@@ -189,7 +189,7 @@ if (isset($pluginclass->form) && $pluginclass->form) {
             if (!$DB->update_record('block_configurable_reports', $report)) {
                 throw new moodle_exception('errorsaving');
             }
-            // GCHLOL GS-946
+            // GCHLOL: GS-946.
             \block_configurable_reports\local\util\event_util::log_component_change(
                 $report,
                 'event:changecomponentmodified',
@@ -220,7 +220,7 @@ if (isset($pluginclass->form) && $pluginclass->form) {
         if (!$DB->update_record('block_configurable_reports', $report)) {
             throw new moodle_exception('errorsaving');
         }
-        // GCHLOL GS-946
+        // GCHLOL: GS-946.
         \block_configurable_reports\local\util\event_util::log_component_change(
             $report,
             'event:changecomponentadded',

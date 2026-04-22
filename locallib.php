@@ -575,7 +575,7 @@ function cr_make_categories_list(&$list, &$parents, $requiredcapability = '', $e
  *
  * @param string $xml
  * @param object $course
- * @return int|false New report id on success, false on failure
+ * @return stdClass|false Newly inserted report record (with id) on success, false on failure
  */
 function cr_import_xml(string $xml, object $course) {
     global $CFG, $DB, $USER;
@@ -605,12 +605,13 @@ function cr_import_xml(string $xml, object $course) {
         }
         $newreport->courseid = $course->id;
         $newreport->ownerid = $USER->id;
-        // GCHLOL: GS- 946.
+        // GCHLOL: Don't include dates when reports are imported. $newreport->name .= " (" . userdate(time()) . ")";
+        // GCHLOL: GS-946.
         if (!$newid = $DB->insert_record('block_configurable_reports', $newreport)) {
             return false;
         }
-
-        return $newid;
+        $newreport->id = $newid;
+        return $newreport;
     }
 
     return false;

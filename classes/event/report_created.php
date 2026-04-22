@@ -64,7 +64,7 @@ class report_created extends base {
     }
 
     /**
-     * Build event from form data; prefers persisted record for snapshot.
+     * Build event from form data plus new id; avoids a DB read by using the inserted data.
      *
      * @param context $context
      * @param int $reportid
@@ -72,15 +72,8 @@ class report_created extends base {
      * @return \core\event\base
      */
     public static function create_from_data(context $context, int $reportid, stdClass $data): self {
-        global $DB;
-
-        if ($persistedreport = $DB->get_record('block_configurable_reports', ['id' => $reportid])) {
-            return self::create_from_report($context, $persistedreport);
-        }
-
         $report = clone $data;
         $report->id = $reportid;
-        $report->lastexecutiontime = $report->lastexecutiontime ?? 0;
         return self::create_from_report($context, $report);
     }
 
