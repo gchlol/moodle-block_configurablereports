@@ -16,8 +16,7 @@
 
 namespace block_configurable_reports\event;
 
-defined('MOODLE_INTERNAL') || die();
-
+use coding_exception;
 use core\context;
 use core\event\base;
 use moodle_url;
@@ -88,10 +87,28 @@ class report_exported extends base {
     public function get_description(): string {
         $data = new stdClass();
         $data->userid = $this->userid;
-        $data->reportname = $this->other['reportname'] ?? '';
+        $data->reportname = $this->other['reportname'];
         $data->objectid = $this->objectid;
-        $data->format = $this->other['format'] ?? 'unknown';
+        $data->format = $this->other['format'];
         return get_string('event:reportexported:desc', 'block_configurable_reports', $data);
+    }
+
+    /**
+     * Validate required data.
+     *
+     * @return void
+     */
+    protected function validate_data(): void {
+        parent::validate_data();
+        if (!isset($this->objectid)) {
+            throw new coding_exception('The \'objectid\' must be set.');
+        }
+        if (!isset($this->other['reportname'])) {
+            throw new coding_exception('The \'reportname\' must be set in other.');
+        }
+        if (!isset($this->other['format'])) {
+            throw new coding_exception('The \'format\' must be set in other.');
+        }
     }
 
     /**

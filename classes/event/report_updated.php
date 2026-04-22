@@ -16,8 +16,7 @@
 
 namespace block_configurable_reports\event;
 
-defined('MOODLE_INTERNAL') || die();
-
+use coding_exception;
 use core\context;
 use core\event\base;
 use moodle_url;
@@ -90,10 +89,28 @@ class report_updated extends base {
     public function get_description(): string {
         $data = new stdClass();
         $data->userid = $this->userid;
-        $data->reportname = $this->other['reportname'] ?? '';
+        $data->reportname = $this->other['reportname'];
         $data->objectid = $this->objectid;
-        $data->change = $this->other['change'] ?? get_string('event:changegeneric', 'block_configurable_reports');
+        $data->change = $this->other['change'];
         return get_string('event:reportupdated:desc', 'block_configurable_reports', $data);
+    }
+
+    /**
+     * Validate required data.
+     *
+     * @return void
+     */
+    protected function validate_data(): void {
+        parent::validate_data();
+        if (!isset($this->objectid)) {
+            throw new coding_exception('The \'objectid\' must be set.');
+        }
+        if (!isset($this->other['reportname'])) {
+            throw new coding_exception('The \'reportname\' must be set in other.');
+        }
+        if (!isset($this->other['change'])) {
+            throw new coding_exception('The \'change\' must be set in other.');
+        }
     }
 
     /**
