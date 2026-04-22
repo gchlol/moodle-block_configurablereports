@@ -18,6 +18,7 @@ namespace block_configurable_reports\event;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context;
 use core\event\base;
 use moodle_url;
 use stdClass;
@@ -31,10 +32,53 @@ use stdClass;
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class report_imported extends base {
+    /**
+     * Init event data.
+     *
+     * @return void
+     */
     protected function init(): void {
         $this->data['crud'] = 'c';
         $this->data['edulevel'] = self::LEVEL_TEACHING;
         $this->data['objecttable'] = 'block_configurable_reports';
+    }
+
+    /**
+     * Build event from a newly imported report record.
+     *
+     * @param context $context
+     * @param stdClass $report
+     * @param string $source Import source identifier
+     * @return \core\event\base
+     */
+    public static function create_from_report(context $context, stdClass $report, string $source): self {
+        $event = self::create([
+            'context' => $context,
+            'objectid' => $report->id,
+            'other' => [
+                'reportname' => format_string($report->name ?? ''),
+                'source' => $source,
+            ],
+        ]);
+        $event->add_record_snapshot('block_configurable_reports', $report);
+        return $event;
+    }
+
+    /**
+     * Build event by looking up the persisted record; returns null if missing.
+     *
+     * @param context $context
+     * @param int $reportid
+     * @param string $source
+     * @return \core\event\base|null
+     */
+    public static function create_from_id(context $context, int $reportid, string $source): ?self {
+        global $DB;
+
+        if ($newreport = $DB->get_record('block_configurable_reports', ['id' => $reportid])) {
+            return self::create_from_report($context, $newreport, $source);
+        }
+        return null;
     }
 
     /**

@@ -23,8 +23,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use block_configurable_reports\local\util\event_util;
-
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -67,15 +65,18 @@ class component_customsql extends component_base {
             $data = $cform->get_data();
             // Function cr_serialize() will add slashes.
             $components = cr_unserialize($this->config->components);
+            // GCHLOL GS-946
             $oldsql = $components['customsql']['config']->querysql ?? '';
             $components['customsql']['config'] = $data;
             $this->config->components = cr_serialize($components);
+            // GCHLOL GS-946
             $sqlchanged = ($data->querysql ?? '') !== $oldsql;
             if (
                 $DB->update_record('block_configurable_reports', $this->config) &&
                 $sqlchanged
             ) {
-                event_util::log_sql_change($this->config);
+                // GCHLOL GS-946
+                \block_configurable_reports\local\util\event_util::log_sql_change($this->config);
             }
         }
     }

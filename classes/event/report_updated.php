@@ -18,6 +18,7 @@ namespace block_configurable_reports\event;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context;
 use core\event\base;
 use moodle_url;
 use stdClass;
@@ -31,10 +32,45 @@ use stdClass;
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class report_updated extends base {
+    /**
+     * Init event data.
+     *
+     * @return void
+     */
     protected function init(): void {
         $this->data['crud'] = 'u';
         $this->data['edulevel'] = self::LEVEL_TEACHING;
         $this->data['objecttable'] = 'block_configurable_reports';
+    }
+
+    /**
+     * Build event from a report record with change summary.
+     *
+     * @param context $context
+     * @param stdClass $report
+     * @param string $change Human-readable change summary
+     * @param string $source UI or API source
+     * @param stdClass|null $snapshot Optional snapshot override
+     * @return \core\event\base
+     */
+    public static function create_from_report(
+        context $context,
+        stdClass $report,
+        string $change,
+        string $source = 'ui',
+        ?stdClass $snapshot = null
+    ): self {
+        $event = self::create([
+            'context' => $context,
+            'objectid' => $report->id,
+            'other' => [
+                'reportname' => format_string($report->name ?? ''),
+                'change' => $change,
+                'source' => $source,
+            ],
+        ]);
+        $event->add_record_snapshot('block_configurable_reports', $snapshot ?? $report);
+        return $event;
     }
 
     /**

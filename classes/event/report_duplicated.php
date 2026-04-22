@@ -18,6 +18,7 @@ namespace block_configurable_reports\event;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context;
 use core\event\base;
 use moodle_url;
 use stdClass;
@@ -31,10 +32,64 @@ use stdClass;
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class report_duplicated extends base {
+    /**
+     * Init event data.
+     *
+     * @return void
+     */
     protected function init(): void {
         $this->data['crud'] = 'c';
         $this->data['edulevel'] = self::LEVEL_TEACHING;
         $this->data['objecttable'] = 'block_configurable_reports';
+    }
+
+    /**
+     * Build event from new and source report records.
+     *
+     * @param context $context
+     * @param stdClass $newreport New report record
+     * @param stdClass $sourcereport Source report record
+     * @param string $source UI or API source
+     * @return \core\event\base
+     */
+    public static function create_from_reports(
+        context $context,
+        stdClass $newreport,
+        stdClass $sourcereport,
+        string $source = 'ui'
+    ): self {
+        $event = self::create([
+            'context' => $context,
+            'objectid' => $newreport->id,
+            'other' => [
+                'reportname' => format_string($newreport->name ?? ''),
+                'sourcename' => format_string($sourcereport->name ?? ''),
+                'sourceid' => $sourcereport->id ?? 0,
+                'source' => $source,
+            ],
+        ]);
+        $event->add_record_snapshot('block_configurable_reports', $newreport);
+        return $event;
+    }
+
+    /**
+     * Build event from new id plus source record.
+     *
+     * @param context $context
+     * @param int $newreportid
+     * @param stdClass $newreportdata Data used to create the duplicate (without id)
+     * @param stdClass $sourcereport
+     * @return \core\event\base
+     */
+    public static function create_from_ids(
+        context $context,
+        int $newreportid,
+        stdClass $newreportdata,
+        stdClass $sourcereport
+    ): self {
+        $newreport = clone $newreportdata;
+        $newreport->id = $newreportid;
+        return self::create_from_reports($context, $newreport, $sourcereport);
     }
 
     /**

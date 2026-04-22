@@ -18,6 +18,7 @@ namespace block_configurable_reports\event;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context;
 use core\event\base;
 use moodle_url;
 use stdClass;
@@ -31,10 +32,57 @@ use stdClass;
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class report_created extends base {
+    /**
+     * Init event data.
+     *
+     * @return void
+     */
     protected function init(): void {
         $this->data['crud'] = 'c';
         $this->data['edulevel'] = self::LEVEL_TEACHING;
         $this->data['objecttable'] = 'block_configurable_reports';
+    }
+
+    /**
+     * Build event from a persisted report record.
+     *
+     * @param context $context
+     * @param stdClass $report
+     * @param string $source UI or API source
+     * @return \core\event\base
+     */
+    public static function create_from_report(context $context, stdClass $report, string $source = 'ui'): self {
+        $event = self::create([
+            'context' => $context,
+            'objectid' => $report->id,
+            'other' => [
+                'reportname' => format_string($report->name ?? ''),
+                'source' => $source,
+            ],
+        ]);
+        $event->add_record_snapshot('block_configurable_reports', $report);
+        return $event;
+    }
+
+    /**
+     * Build event from form data; prefers persisted record for snapshot.
+     *
+     * @param context $context
+     * @param int $reportid
+     * @param stdClass $data
+     * @return \core\event\base
+     */
+    public static function create_from_data(context $context, int $reportid, stdClass $data): self {
+        global $DB;
+
+        if ($persistedreport = $DB->get_record('block_configurable_reports', ['id' => $reportid])) {
+            return self::create_from_report($context, $persistedreport);
+        }
+
+        $report = clone $data;
+        $report->id = $reportid;
+        $report->lastexecutiontime = $report->lastexecutiontime ?? 0;
+        return self::create_from_report($context, $report);
     }
 
     /**

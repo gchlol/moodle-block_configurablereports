@@ -23,8 +23,6 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use block_configurable_reports\local\util\event_util;
-
 require_once("../../config.php");
 require_once($CFG->dirroot . "/blocks/configurable_reports/locallib.php");
 require_once('import_form.php');
@@ -65,7 +63,8 @@ if ($importurl) {
     }
 
     if ($newid = cr_import_xml($xml, $course)) {
-        event_util::log_report_imported_by_id($context, $newid, 'url');
+        // GCHLOL GS-946
+        \block_configurable_reports\event\report_imported::create_from_id($context, $newid, 'url')?->trigger();
         redirect(
             "$CFG->wwwroot/blocks/configurable_reports/managereport.php?courseid={$course->id}",
             get_string('reportcreated', 'block_configurable_reports')
@@ -87,7 +86,8 @@ if ($importpath) {
         $xml = base64_decode($response->content);
 
         if ($newid = cr_import_xml($xml, $course)) {
-            event_util::log_report_imported_by_id($context, $newid, 'repository');
+            // GCHLOL GS-946
+            \block_configurable_reports\event\report_imported::create_from_id($context, $newid, 'repository')?->trigger();
             // Exit point
             redirect(
                 new moodle_url(
@@ -107,7 +107,8 @@ $mform = new import_form(null, $course->id);
 if ($data = $mform->get_data()) {
     if ($xml = $mform->get_file_content('userfile')) {
         if ($newid = cr_import_xml($xml, $course)) {
-            event_util::log_report_imported_by_id($context, $newid, 'upload');
+            // GCHLOL GS-946
+            \block_configurable_reports\event\report_imported::create_from_id($context, $newid, 'upload')?->trigger();
             redirect(
                 "$CFG->wwwroot/blocks/configurable_reports/managereport.php?courseid={$course->id}",
                 get_string('reportcreated', 'block_configurable_reports')

@@ -23,8 +23,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use block_configurable_reports\local\util\event_util;
-
 require_once("../../config.php");
 require_once($CFG->dirroot . "/blocks/configurable_reports/locallib.php");
 
@@ -116,7 +114,8 @@ if (!$download) {
 
     // Print the report HTML.
     $reportclass->print_report_page($PAGE);
-    event_util::log_report_viewed($context, $report);
+    // GCHLOL GS-946
+    \block_configurable_reports\event\report_viewed::create_from_report($context, $report)->trigger();
 
 } else {
     // Large exports are likely to take their time and memory.
@@ -125,8 +124,8 @@ if (!$download) {
     $exportplugin = $CFG->dirroot . '/blocks/configurable_reports/export/' . $format . '/export.php';
     if (file_exists($exportplugin)) {
         require_once($exportplugin);
-        // Log before exporting, as exporters may exit after sending the file.
-        event_util::log_report_exported($context, $report, $format);
+        // GCHLOL GS-946 log before exporting, as exporters may exit after sending the file.
+        \block_configurable_reports\event\report_exported::create_from_report($context, $report, $format)->trigger();
         export_report($reportclass->finalreport);
     }
     die;

@@ -14,26 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
- * Utility methods for Configurable Reports events.
- *
- * @package     block_configurable_reports
- * @copyright   2025 Gold Coast Health
- * @author      Jonas Sajonas
- * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
 namespace block_configurable_reports\local\util;
 
-defined('MOODLE_INTERNAL') || die();
-
-use block_configurable_reports\event\report_created;
-use block_configurable_reports\event\report_deleted;
-use block_configurable_reports\event\report_duplicated;
-use block_configurable_reports\event\report_exported;
-use block_configurable_reports\event\report_imported;
 use block_configurable_reports\event\report_updated;
-use block_configurable_reports\event\report_viewed;
 use core\context;
 use context_course;
 use context_system;
@@ -41,234 +24,13 @@ use stdClass;
 
 /**
  * Configurable Reports event utility class.
+ *
+ * @package     block_configurable_reports
+ * @copyright   2025 Gold Coast Health
+ * @author      Jonas Sajonas
+ * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 final class event_util {
-
-    /**
-     * Log report was viewed.
-     *
-     * @param context $context
-     * @param stdClass $report
-     * @param string $source UI or API source
-     * @return void
-     */
-    public static function log_report_viewed($context, stdClass $report, string $source = 'ui'): void {
-        $event = report_viewed::create([
-            'context' => $context,
-            'objectid' => $report->id,
-            'other' => [
-                'reportname' => format_string($report->name ?? ''),
-                'source' => $source,
-            ],
-        ]);
-        $event->add_record_snapshot('block_configurable_reports', $report);
-        $event->trigger();
-    }
-
-    /**
-     * Log report was exported in given format.
-     *
-     * @param context $context
-     * @param stdClass $report
-     * @param string $format Export format
-     * @param string $source UI or API source
-     * @return void
-     */
-    public static function log_report_exported($context, stdClass $report, string $format, string $source = 'ui'): void {
-        $event = report_exported::create([
-            'context' => $context,
-            'objectid' => $report->id,
-            'other' => [
-                'reportname' => format_string($report->name ?? ''),
-                'format' => $format,
-                'source' => $source,
-            ],
-        ]);
-        $event->add_record_snapshot('block_configurable_reports', $report);
-        $event->trigger();
-    }
-
-    /**
-     * Log report created.
-     *
-     * @param context $context
-     * @param stdClass $report
-     * @param string $source UI or API source
-     * @return void
-     */
-    public static function log_report_created($context, stdClass $report, string $source = 'ui'): void {
-        $event = report_created::create([
-            'context' => $context,
-            'objectid' => $report->id,
-            'other' => [
-                'reportname' => format_string($report->name ?? ''),
-                'source' => $source,
-            ],
-        ]);
-        $event->add_record_snapshot('block_configurable_reports', $report);
-        $event->trigger();
-    }
-
-    /**
-     * Convenience wrapper to log creation when only new id + data are available.
-     *
-     * @param context $context
-     * @param int $reportid
-     * @param stdClass $data
-     * @return void
-     */
-    public static function log_report_created_from_data($context, int $reportid, stdClass $data): void {
-        global $DB;
-
-        // Prefer the persisted record so event snapshot fields exactly match DB schema.
-        if ($persistedreport = $DB->get_record('block_configurable_reports', ['id' => $reportid])) {
-            self::log_report_created($context, $persistedreport);
-            return;
-        }
-
-        // Fallback path if record lookup unexpectedly fails.
-        $report = clone $data;
-        $report->id = $reportid;
-        $report->lastexecutiontime = $report->lastexecutiontime ?? 0;
-        self::log_report_created($context, $report);
-    }
-
-    /**
-     * Log report updated with change summary.
-     *
-     * @param context $context
-     * @param stdClass $report Updated report record
-     * @param string $change Human-readable change summary
-     * @param string $source UI or API source
-     * @param stdClass|null $snapshot Optional snapshot to attach
-     * @return void
-     */
-    public static function log_report_updated(
-        $context,
-        stdClass $report,
-        string $change,
-        string $source = 'ui',
-        ?stdClass $snapshot = null
-    ): void {
-        $event = report_updated::create([
-            'context' => $context,
-            'objectid' => $report->id,
-            'other' => [
-                'reportname' => format_string($report->name ?? ''),
-                'change' => $change,
-                'source' => $source,
-            ],
-        ]);
-        $event->add_record_snapshot('block_configurable_reports', $snapshot ?? $report);
-        $event->trigger();
-    }
-
-    /**
-     * Log report deleted.
-     *
-     * @param context $context
-     * @param stdClass $report Report being deleted
-     * @param string $source UI or API source
-     * @return void
-     */
-    public static function log_report_deleted($context, stdClass $report, string $source = 'ui'): void {
-        $event = report_deleted::create([
-            'context' => $context,
-            'objectid' => $report->id,
-            'other' => [
-                'reportname' => format_string($report->name ?? ''),
-                'source' => $source,
-            ],
-        ]);
-        $event->add_record_snapshot('block_configurable_reports', $report);
-        $event->trigger();
-    }
-
-    /**
-     * Log report imported.
-     *
-     * @param context $context
-     * @param stdClass $report Newly imported report
-     * @param string $source Import source identifier
-     * @return void
-     */
-    public static function log_report_imported($context, stdClass $report, string $source): void {
-        $event = report_imported::create([
-            'context' => $context,
-            'objectid' => $report->id,
-            'other' => [
-                'reportname' => format_string($report->name ?? ''),
-                'source' => $source,
-            ],
-        ]);
-        $event->add_record_snapshot('block_configurable_reports', $report);
-        $event->trigger();
-    }
-
-    /**
-     * Convenience wrapper to log import when only id is available.
-     *
-     * @param context $context
-     * @param int $reportid
-     * @param string $source
-     * @return void
-     */
-    public static function log_report_imported_by_id($context, int $reportid, string $source): void {
-        global $DB;
-
-        if ($newreport = $DB->get_record('block_configurable_reports', ['id' => $reportid])) {
-            self::log_report_imported($context, $newreport, $source);
-        }
-    }
-
-    /**
-     * Log report duplicated.
-     *
-     * @param context $context
-     * @param stdClass $newreport New report record
-     * @param stdClass $sourcereport Source report record
-     * @param string $source UI or API source
-     * @return void
-     */
-    public static function log_report_duplicated(
-        $context,
-        stdClass $newreport,
-        stdClass $sourcereport,
-        string $source = 'ui'
-    ): void {
-        $event = report_duplicated::create([
-            'context' => $context,
-            'objectid' => $newreport->id,
-            'other' => [
-                'reportname' => format_string($newreport->name ?? ''),
-                'sourcename' => format_string($sourcereport->name ?? ''),
-                'sourceid' => $sourcereport->id ?? 0,
-                'source' => $source,
-            ],
-        ]);
-        $event->add_record_snapshot('block_configurable_reports', $newreport);
-        $event->trigger();
-    }
-
-    /**
-     * Helper to log duplication using ids.
-     *
-     * @param context $context
-     * @param int $newreportid
-     * @param stdClass $newreportdata (without id)
-     * @param stdClass $sourcereport
-     * @return void
-     */
-    public static function log_report_duplicated_from_ids(
-        $context,
-        int $newreportid,
-        stdClass $newreportdata,
-        stdClass $sourcereport
-    ): void {
-        $newreport = clone $newreportdata;
-        $newreport->id = $newreportid;
-        self::log_report_duplicated($context, $newreport, $sourcereport);
-    }
 
     /**
      * Prepare duplicate report object for insertion.
@@ -291,13 +53,13 @@ final class event_util {
      * @param bool $visible
      * @return void
      */
-    public static function log_report_visibility_change($context, stdClass $report, bool $visible): void {
+    public static function log_report_visibility_change(context $context, stdClass $report, bool $visible): void {
         $updatedreport = clone $report;
         $updatedreport->visible = $visible ? 1 : 0;
         $changemsg = $visible
             ? get_string('event:changevisibilityshown', 'block_configurable_reports')
             : get_string('event:changevisibilityhidden', 'block_configurable_reports');
-        self::log_report_updated($context, $updatedreport, $changemsg, 'ui', $updatedreport);
+        report_updated::create_from_report($context, $updatedreport, $changemsg, 'ui', $updatedreport)->trigger();
     }
 
     /**
@@ -366,7 +128,7 @@ final class event_util {
         $change = ($param === null)
             ? get_string($messagekey, 'block_configurable_reports')
             : get_string($messagekey, 'block_configurable_reports', $param);
-        self::log_report_updated($context, $report, $change);
+        report_updated::create_from_report($context, $report, $change)->trigger();
     }
 
     /**
@@ -399,24 +161,7 @@ final class event_util {
         $context = ($reportconfig->courseid == SITEID)
             ? context_system::instance()
             : context_course::instance($reportconfig->courseid);
-        self::log_report_updated($context, $reportconfig, get_string('event:changesqlquery', 'block_configurable_reports'));
-    }
-
-    /**
-     * Compare old and new SQL config and log when changed.
-     *
-     * @param stdClass $reportconfig
-     * @param stdClass $data
-     * @param array $components
-     * @return void
-     */
-    public static function log_sql_change_if_needed(stdClass $reportconfig, stdClass $data, array $components): void {
-        $oldsql = $components['customsql']['config']->querysql ?? '';
-        if (
-            isset($data->querysql) &&
-            $data->querysql !== $oldsql
-        ) {
-            self::log_sql_change($reportconfig);
-        }
+        $change = get_string('event:changesqlquery', 'block_configurable_reports');
+        report_updated::create_from_report($context, $reportconfig, $change)->trigger();
     }
 }
