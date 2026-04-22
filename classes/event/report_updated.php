@@ -63,7 +63,7 @@ class report_updated extends base {
             'context' => $context,
             'objectid' => $report->id,
             'other' => [
-                'reportname' => format_string($report->name ?? ''),
+                'reportname' => format_string($report->name),
                 'change' => $change,
                 'source' => $source,
             ],

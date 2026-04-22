@@ -61,7 +61,7 @@ class report_exported extends base {
             'context' => $context,
             'objectid' => $report->id,
             'other' => [
-                'reportname' => format_string($report->name ?? ''),
+                'reportname' => format_string($report->name),
                 'format' => $format,
                 'source' => $source,
             ],

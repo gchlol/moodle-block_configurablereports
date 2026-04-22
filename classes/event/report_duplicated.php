@@ -61,8 +61,8 @@ class report_duplicated extends base {
             'context' => $context,
             'objectid' => $newreport->id,
             'other' => [
-                'reportname' => format_string($newreport->name ?? ''),
-                'sourcename' => format_string($sourcereport->name ?? ''),
+                'reportname' => format_string($newreport->name),
+                'sourcename' => format_string($sourcereport->name),
                 'sourceid' => $sourcereport->id,
                 'source' => $source,
             ],

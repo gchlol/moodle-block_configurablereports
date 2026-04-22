@@ -55,7 +55,7 @@ class report_viewed extends base {
             'context' => $context,
             'objectid' => $report->id,
             'other' => [
-                'reportname' => format_string($report->name ?? ''),
+                'reportname' => format_string($report->name),
                 'source' => $source,
             ],
         ]);
