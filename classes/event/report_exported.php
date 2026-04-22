@@ -49,7 +49,7 @@ class report_exported extends base {
      * @param stdClass $report
      * @param string $format Export format
      * @param string $source UI or API source
-     * @return \core\event\base
+     * @return self
      */
     public static function create_from_report(
         context $context,

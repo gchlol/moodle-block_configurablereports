@@ -49,15 +49,13 @@ class report_updated extends base {
      * @param stdClass $report
      * @param string $change Human-readable change summary
      * @param string $source UI or API source
-     * @param stdClass|null $snapshot Optional snapshot override
-     * @return \core\event\base
+     * @return self
      */
     public static function create_from_report(
         context $context,
         stdClass $report,
         string $change,
-        string $source = 'ui',
-        ?stdClass $snapshot = null
+        string $source = 'ui'
     ): self {
         $event = self::create([
             'context' => $context,
@@ -68,7 +66,7 @@ class report_updated extends base {
                 'source' => $source,
             ],
         ]);
-        $event->add_record_snapshot('block_configurable_reports', $snapshot ?? $report);
+        $event->add_record_snapshot('block_configurable_reports', $report);
         return $event;
     }
 

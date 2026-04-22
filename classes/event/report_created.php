@@ -46,9 +46,9 @@ class report_created extends base {
      * Build event from a persisted report record.
      *
      * @param context $context
-     * @param stdClass $report
+     * @param stdClass $report Report record (id required)
      * @param string $source UI or API source
-     * @return \core\event\base
+     * @return self
      */
     public static function create_from_report(context $context, stdClass $report, string $source = 'ui'): self {
         $event = self::create([
@@ -61,20 +61,6 @@ class report_created extends base {
         ]);
         $event->add_record_snapshot('block_configurable_reports', $report);
         return $event;
-    }
-
-    /**
-     * Build event from form data plus new id; avoids a DB read by using the inserted data.
-     *
-     * @param context $context
-     * @param int $reportid
-     * @param stdClass $data
-     * @return \core\event\base
-     */
-    public static function create_from_data(context $context, int $reportid, stdClass $data): self {
-        $report = clone $data;
-        $report->id = $reportid;
-        return self::create_from_report($context, $report);
     }
 
     /**

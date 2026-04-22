@@ -46,10 +46,10 @@ class report_duplicated extends base {
      * Build event from new and source report records.
      *
      * @param context $context
-     * @param stdClass $newreport New report record
+     * @param stdClass $newreport New report record (id required)
      * @param stdClass $sourcereport Source report record
      * @param string $source UI or API source
-     * @return \core\event\base
+     * @return self
      */
     public static function create_from_reports(
         context $context,
@@ -69,26 +69,6 @@ class report_duplicated extends base {
         ]);
         $event->add_record_snapshot('block_configurable_reports', $newreport);
         return $event;
-    }
-
-    /**
-     * Build event from new id plus source record.
-     *
-     * @param context $context
-     * @param int $newreportid
-     * @param stdClass $newreportdata Data used to create the duplicate (without id)
-     * @param stdClass $sourcereport
-     * @return \core\event\base
-     */
-    public static function create_from_ids(
-        context $context,
-        int $newreportid,
-        stdClass $newreportdata,
-        stdClass $sourcereport
-    ): self {
-        $newreport = clone $newreportdata;
-        $newreport->id = $newreportid;
-        return self::create_from_reports($context, $newreport, $sourcereport);
     }
 
     /**

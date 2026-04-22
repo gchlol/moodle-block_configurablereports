@@ -128,15 +128,15 @@ if (($show || $hide) && confirm_sesskey()) {
 
 if ($duplicate && confirm_sesskey()) {
     // GCHLOL: GS-946.
-    $newreport = \block_configurable_reports\local\util\event_util::prepare_report_duplicate($report);
+    $newreport = clone $report;
+    unset($newreport->id);
     $newreport->name = get_string('copyasnoun') . ' ' . $newreport->name;
-    if (!$newreportid = $DB->insert_record('block_configurable_reports', $newreport)) {
+    if (!$newreport->id = $DB->insert_record('block_configurable_reports', $newreport)) {
         throw new moodle_exception('cannotduplicate', 'block_configurable_reports');
     }
     // GCHLOL: GS-946.
-    \block_configurable_reports\event\report_duplicated::create_from_ids(
+    \block_configurable_reports\event\report_duplicated::create_from_reports(
         $context,
-        $newreportid,
         $newreport,
         $report
     )->trigger();
@@ -245,15 +245,15 @@ if ($editform->is_cancelled()) {
             throw new moodle_exception('nosqlpermissions');
         }
 
-        if (!$lastid = $DB->insert_record('block_configurable_reports', $data)) {
+        if (!$data->id = $DB->insert_record('block_configurable_reports', $data)) {
             throw new moodle_exception('errorsavingreport', 'block_configurable_reports');
         }
         // GCHLOL: GS-946.
-        \block_configurable_reports\event\report_created::create_from_data($context, $lastid, $data)->trigger();
+        \block_configurable_reports\event\report_created::create_from_report($context, $data)->trigger();
 
-        $reportclass = new $reportclassname($lastid);
+        $reportclass = new $reportclassname($data->id);
         redirect(
-            $CFG->wwwroot . '/blocks/configurable_reports/editcomp.php?id=' . $lastid . '&comp=' . $reportclass->components[0]
+            $CFG->wwwroot . '/blocks/configurable_reports/editcomp.php?id=' . $data->id . '&comp=' . $reportclass->components[0]
         );
     } else {
 

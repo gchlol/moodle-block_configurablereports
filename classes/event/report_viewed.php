@@ -48,7 +48,7 @@ class report_viewed extends base {
      * @param context $context
      * @param stdClass $report
      * @param string $source UI or API source
-     * @return \core\event\base
+     * @return self
      */
     public static function create_from_report(context $context, stdClass $report, string $source = 'ui'): self {
         $event = self::create([

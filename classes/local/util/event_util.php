@@ -33,19 +33,6 @@ use stdClass;
 final class event_util {
 
     /**
-     * Prepare duplicate report object for insertion.
-     *
-     * @param stdClass $report
-     * @return stdClass
-     */
-    public static function prepare_report_duplicate(stdClass $report): stdClass {
-        $duplicate = clone $report;
-        unset($duplicate->id);
-
-        return $duplicate;
-    }
-
-    /**
      * Log visibility change as report update.
      *
      * @param context $context
@@ -59,7 +46,7 @@ final class event_util {
         $changemsg = $visible
             ? get_string('event:changevisibilityshown', 'block_configurable_reports')
             : get_string('event:changevisibilityhidden', 'block_configurable_reports');
-        report_updated::create_from_report($context, $updatedreport, $changemsg, 'ui', $updatedreport)->trigger();
+        report_updated::create_from_report($context, $updatedreport, $changemsg)->trigger();
     }
 
     /**

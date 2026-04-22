@@ -135,6 +135,7 @@ if (!$cid) {
 if (!$plugin || $plugin !== $pname) {
     throw new moodle_exception('nosuchplugin');
 }
+defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 require_once($CFG->dirroot . '/blocks/configurable_reports/components/' . $comp . '/' . $pname . '/plugin.class.php');
 $pluginclassname = 'plugin_' . $pname;
@@ -279,3 +280,4 @@ if ($pluginclass->form) {
 }
 
 echo $OUTPUT->footer();
+
