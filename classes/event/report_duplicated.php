@@ -64,7 +64,7 @@ class report_duplicated extends base {
             'other' => [
                 'reportname' => format_string($newreport->name ?? ''),
                 'sourcename' => format_string($sourcereport->name ?? ''),
-                'sourceid' => $sourcereport->id ?? 0,
+                'sourceid' => $sourcereport->id,
                 'source' => $source,
             ],
         ]);

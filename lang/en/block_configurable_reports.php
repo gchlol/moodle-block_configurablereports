@@ -698,4 +698,6 @@ $string['event:changecomponentmodified'] = 'Modified component: {$a}';
 $string['event:changecomponentadded'] = 'Added component/plugin: {$a}';
 $string['event:changecomponentdeleted'] = 'Removed component/plugin: {$a}';
 $string['event:changecomponentreordered'] = 'Reordered component: {$a}';
+
+// Errors.
 $string['errorsavingcomponent'] = 'There was a problem saving the component order or deletion.';

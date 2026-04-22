@@ -92,12 +92,7 @@ class report_deleted extends base {
      * @return moodle_url
      */
     public function get_url(): moodle_url {
-        $params = [];
-        if ($this->contextlevel === CONTEXT_COURSE) {
-            $params['courseid'] = $this->contextinstanceid;
-        } else {
-            $params['courseid'] = SITEID;
-        }
-        return new moodle_url('/blocks/configurable_reports/managereport.php', $params);
+        $courseid = ($this->contextlevel === CONTEXT_COURSE) ? $this->contextinstanceid : SITEID;
+        return new moodle_url('/blocks/configurable_reports/managereport.php', ['courseid' => $courseid]);
     }
 }
