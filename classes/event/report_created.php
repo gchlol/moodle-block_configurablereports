@@ -59,7 +59,6 @@ class report_created extends base {
                 'source' => $source,
             ],
         ]);
-        $event->add_record_snapshot('block_configurable_reports', $report);
         return $event;
     }
 

@@ -119,12 +119,7 @@ if (!$cid) {
         $report->components = cr_serialize($components);
         $DB->update_record('block_configurable_reports', $report);
         // GCHLOL: GS-946.
-        \block_configurable_reports\local\util\event_util::log_component_reorder_or_delete(
-            $report,
-            $comp,
-            $pname,
-            $delete
-        );
+        \block_configurable_reports\local\util\event_util::log_tab_change($report, $comp);
         redirect(new moodle_url('/blocks/configurable_reports/editcomp.php', ['id' => $id, 'comp' => $comp]));
         exit;
     }
@@ -189,11 +184,7 @@ if (isset($pluginclass->form) && $pluginclass->form) {
                 throw new moodle_exception('errorsaving');
             }
             // GCHLOL: GS-946.
-            \block_configurable_reports\local\util\event_util::log_component_change(
-                $report,
-                'event:changecomponentmodified',
-                $comp
-            );
+            \block_configurable_reports\local\util\event_util::log_tab_change($report, $comp);
             redirect(new moodle_url('/blocks/configurable_reports/editcomp.php', ['id' => $id, 'comp' => $comp]));
             exit;
 
@@ -220,11 +211,7 @@ if (isset($pluginclass->form) && $pluginclass->form) {
             throw new moodle_exception('errorsaving');
         }
         // GCHLOL: GS-946.
-        \block_configurable_reports\local\util\event_util::log_component_change(
-            $report,
-            'event:changecomponentadded',
-            $pname
-        );
+        \block_configurable_reports\local\util\event_util::log_tab_change($report, $comp);
         redirect(new moodle_url('/blocks/configurable_reports/editcomp.php', ['id' => $id, 'comp' => $comp]));
         exit;
     }
@@ -249,6 +236,8 @@ if (isset($pluginclass->form) && $pluginclass->form) {
     if (!$DB->update_record('block_configurable_reports', $report)) {
         throw new moodle_exception('errorsaving');
     }
+    // GCHLOL: GS-946.
+    \block_configurable_reports\local\util\event_util::log_tab_change($report, $comp);
 
     redirect(new moodle_url('/blocks/configurable_reports/editcomp.php', ['id' => $id, 'comp' => $comp]));
     exit;

@@ -67,7 +67,6 @@ class report_duplicated extends base {
                 'source' => $source,
             ],
         ]);
-        $event->add_record_snapshot('block_configurable_reports', $newreport);
         return $event;
     }
 

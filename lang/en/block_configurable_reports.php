@@ -693,7 +693,3 @@ $string['event:changetotalrecords'] = 'Toggled total records display';
 $string['event:changeprintbutton'] = 'Toggled print button';
 $string['event:changevisibilityshown'] = 'Made report visible';
 $string['event:changevisibilityhidden'] = 'Made report hidden';
-$string['event:changecomponentmodified'] = 'Modified component: {$a}';
-$string['event:changecomponentadded'] = 'Added component/plugin: {$a}';
-$string['event:changecomponentdeleted'] = 'Removed component/plugin: {$a}';
-$string['event:changecomponentreordered'] = 'Reordered component: {$a}';

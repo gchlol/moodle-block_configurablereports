@@ -64,6 +64,8 @@ class component_permissions extends component_base {
             }
             $this->config->components = cr_serialize($components);
             $DB->update_record('block_configurable_reports', $this->config);
+            // GCHLOL: GS-946.
+            \block_configurable_reports\local\util\event_util::log_tab_change($this->config, 'permissions');
         }
     }
 

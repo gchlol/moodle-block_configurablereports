@@ -97,44 +97,6 @@ final class event_util {
     }
 
     /**
-     * Log component change message.
-     *
-     * @param stdClass $report
-     * @param string $messagekey
-     * @param mixed $param
-     * @return void
-     */
-    public static function log_component_change(stdClass $report, string $messagekey, $param = null): void {
-        $context = ($report->courseid == SITEID)
-            ? context_system::instance()
-            : context_course::instance($report->courseid);
-        $change = ($param === null)
-            ? get_string($messagekey, 'block_configurable_reports')
-            : get_string($messagekey, 'block_configurable_reports', $param);
-        report_updated::create_from_report($context, $report, $change)->trigger();
-    }
-
-    /**
-     * Log component reorder or delete events.
-     *
-     * @param stdClass $report
-     * @param string $componentname
-     * @param string $pluginname
-     * @param bool $delete
-     * @return void
-     */
-    public static function log_component_reorder_or_delete(
-        stdClass $report,
-        string $componentname,
-        string $pluginname,
-        bool $delete
-    ): void {
-        $messagekey = $delete ? 'event:changecomponentdeleted' : 'event:changecomponentreordered';
-        $param = $delete ? $pluginname : $componentname;
-        self::log_component_change($report, $messagekey, $param);
-    }
-
-    /**
      * Log SQL change event for custom SQL components.
      *
      * @param stdClass $reportconfig
@@ -146,5 +108,19 @@ final class event_util {
             : context_course::instance($reportconfig->courseid);
         $change = get_string('event:changesqlquery', 'block_configurable_reports');
         report_updated::create_from_report($context, $reportconfig, $change)->trigger();
+    }
+
+    /**
+     * Log tab-level change event (Filters, Permissions).
+     *
+     * @param stdClass $report
+     * @param string $comp Component/tab name
+     * @return void
+     */
+    public static function log_tab_change(stdClass $report, string $comp): void {
+        $context = ($report->courseid == SITEID)
+            ? context_system::instance()
+            : context_course::instance($report->courseid);
+        report_updated::create_from_report($context, $report, $comp)->trigger();
     }
 }
