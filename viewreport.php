@@ -124,7 +124,7 @@ if (!$download) {
     $exportplugin = $CFG->dirroot . '/blocks/configurable_reports/export/' . $format . '/export.php';
     if (file_exists($exportplugin)) {
         require_once($exportplugin);
-        // GCHLOL: GS-946 log before exporting, as exporters may exit after sending the file.
+        // GCHLOL: GS-946. Log before export; exporters may exit after sending the file.
         \block_configurable_reports\event\report_exported::create_from_report($context, $report, $format)->trigger();
         export_report($reportclass->finalreport);
     }

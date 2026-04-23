@@ -67,11 +67,9 @@ class component_customsql extends component_base {
             $oldsql = $components['customsql']['config']->querysql ?? '';
             $components['customsql']['config'] = $data;
             $this->config->components = cr_serialize($components);
-            $sqlchanged = ($data->querysql ?? '') !== $oldsql;
-            if (
-                $DB->update_record('block_configurable_reports', $this->config) &&
-                $sqlchanged
-            ) {
+            $DB->update_record('block_configurable_reports', $this->config);
+            // GCHLOL: GS-946.
+            if ($data->querysql !== $oldsql) {
                 \block_configurable_reports\local\util\event_util::log_sql_change($this->config);
             }
         }

@@ -17,7 +17,7 @@
 namespace block_configurable_reports\event;
 
 use coding_exception;
-use core\context;
+use context;
 use core\event\base;
 use moodle_url;
 use stdClass;

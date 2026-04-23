@@ -17,7 +17,7 @@
 namespace block_configurable_reports\local\util;
 
 use block_configurable_reports\event\report_updated;
-use core\context;
+use context;
 use context_course;
 use context_system;
 use stdClass;
@@ -41,12 +41,11 @@ final class event_util {
      * @return void
      */
     public static function log_report_visibility_change(context $context, stdClass $report, bool $visible): void {
-        $updatedreport = clone $report;
-        $updatedreport->visible = $visible ? 1 : 0;
         $changemsg = $visible
             ? get_string('event:changevisibilityshown', 'block_configurable_reports')
             : get_string('event:changevisibilityhidden', 'block_configurable_reports');
-        report_updated::create_from_report($context, $updatedreport, $changemsg)->trigger();
+        $report->visible = $visible ? 1 : 0;
+        report_updated::create_from_report($context, $report, $changemsg)->trigger();
     }
 
     /**
@@ -54,7 +53,7 @@ final class event_util {
      *
      * @param stdClass $original
      * @param stdClass $newdata
-     * @return array [string $change, stdClass $updatedreport, bool $haschanges]
+     * @return array [string $change, stdClass $updatedreport] — change is '' when nothing tracked changed
      */
     public static function build_report_change_summary(stdClass $original, stdClass $newdata): array {
         $changes = [];
@@ -71,7 +70,7 @@ final class event_util {
         ];
 
         foreach ($fieldmap as $field => $meta) {
-            if (!isset($newdata->$field) || !property_exists($original, $field)) {
+            if (!isset($newdata->$field)) {
                 continue;
             }
             $oldvalue = $original->$field;
@@ -94,10 +93,7 @@ final class event_util {
             }
         }
 
-        $haschanges = !empty($changes);
-        $change = $haschanges ? implode(', ', $changes) : get_string('event:changegeneric', 'block_configurable_reports');
-
-        return [$change, $updatedreport, $haschanges];
+        return [implode(', ', $changes), $updatedreport];
     }
 
     /**

@@ -134,7 +134,6 @@ if ($duplicate && confirm_sesskey()) {
     if (!$newreport->id = $DB->insert_record('block_configurable_reports', $newreport)) {
         throw new moodle_exception('cannotduplicate', 'block_configurable_reports');
     }
-    // GCHLOL: GS-946.
     \block_configurable_reports\event\report_duplicated::create_from_reports(
         $context,
         $newreport,
@@ -245,15 +244,16 @@ if ($editform->is_cancelled()) {
             throw new moodle_exception('nosqlpermissions');
         }
 
-        if (!$data->id = $DB->insert_record('block_configurable_reports', $data)) {
+        if (!$lastid = $DB->insert_record('block_configurable_reports', $data)) {
             throw new moodle_exception('errorsavingreport', 'block_configurable_reports');
         }
         // GCHLOL: GS-946.
+        $data->id = $lastid;
         \block_configurable_reports\event\report_created::create_from_report($context, $data)->trigger();
 
-        $reportclass = new $reportclassname($data->id);
+        $reportclass = new $reportclassname($lastid);
         redirect(
-            $CFG->wwwroot . '/blocks/configurable_reports/editcomp.php?id=' . $data->id . '&comp=' . $reportclass->components[0]
+            $CFG->wwwroot . '/blocks/configurable_reports/editcomp.php?id=' . $lastid . '&comp=' . $reportclass->components[0]
         );
     } else {
 
@@ -264,11 +264,11 @@ if ($editform->is_cancelled()) {
             throw new moodle_exception('errorsavingreport', 'block_configurable_reports');
         }
         // GCHLOL: GS-946.
-        [$change, $updatedreport, $haschanges] = \block_configurable_reports\local\util\event_util::build_report_change_summary(
+        [$change, $updatedreport] = \block_configurable_reports\local\util\event_util::build_report_change_summary(
             $report,
             $data
         );
-        if ($haschanges) {
+        if ($change !== '') {
             \block_configurable_reports\event\report_updated::create_from_report(
                 $context,
                 $updatedreport,

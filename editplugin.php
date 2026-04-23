@@ -117,9 +117,7 @@ if (!$cid) {
         }
         $components[$comp]['elements'] = $elements;
         $report->components = cr_serialize($components);
-        if (!$DB->update_record('block_configurable_reports', $report)) {
-            throw new moodle_exception('errorsavingcomponent', 'block_configurable_reports');
-        }
+        $DB->update_record('block_configurable_reports', $report);
         // GCHLOL: GS-946.
         \block_configurable_reports\local\util\event_util::log_component_reorder_or_delete(
             $report,
