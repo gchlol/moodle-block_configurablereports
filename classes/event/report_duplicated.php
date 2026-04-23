@@ -48,26 +48,18 @@ class report_duplicated extends base {
      * @param context $context
      * @param stdClass $newreport New report record (id required)
      * @param stdClass $sourcereport Source report record
-     * @param string $source UI or API source
      * @return self
      */
-    public static function create_from_reports(
-        context $context,
-        stdClass $newreport,
-        stdClass $sourcereport,
-        string $source = 'ui'
-    ): self {
-        $event = self::create([
+    public static function create_from_reports(context $context, stdClass $newreport, stdClass $sourcereport): self {
+        return self::create([
             'context' => $context,
             'objectid' => $newreport->id,
             'other' => [
                 'reportname' => format_string($newreport->name),
                 'sourcename' => format_string($sourcereport->name),
                 'sourceid' => $sourcereport->id,
-                'source' => $source,
             ],
         ]);
-        return $event;
     }
 
     /**

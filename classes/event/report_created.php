@@ -47,19 +47,16 @@ class report_created extends base {
      *
      * @param context $context
      * @param stdClass $report Report record (id required)
-     * @param string $source UI or API source
      * @return self
      */
-    public static function create_from_report(context $context, stdClass $report, string $source = 'ui'): self {
-        $event = self::create([
+    public static function create_from_report(context $context, stdClass $report): self {
+        return self::create([
             'context' => $context,
             'objectid' => $report->id,
             'other' => [
                 'reportname' => format_string($report->name),
-                'source' => $source,
             ],
         ]);
-        return $event;
     }
 
     /**

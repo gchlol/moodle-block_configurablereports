@@ -51,7 +51,7 @@ class report_imported extends base {
      * @return self
      */
     public static function create_from_report(context $context, stdClass $report, string $source): self {
-        $event = self::create([
+        return self::create([
             'context' => $context,
             'objectid' => $report->id,
             'other' => [
@@ -59,7 +59,6 @@ class report_imported extends base {
                 'source' => $source,
             ],
         ]);
-        return $event;
     }
 
     /**

@@ -48,25 +48,17 @@ class report_exported extends base {
      * @param context $context
      * @param stdClass $report
      * @param string $format Export format
-     * @param string $source UI or API source
      * @return self
      */
-    public static function create_from_report(
-        context $context,
-        stdClass $report,
-        string $format,
-        string $source = 'ui'
-    ): self {
-        $event = self::create([
+    public static function create_from_report(context $context, stdClass $report, string $format): self {
+        return self::create([
             'context' => $context,
             'objectid' => $report->id,
             'other' => [
                 'reportname' => format_string($report->name),
                 'format' => $format,
-                'source' => $source,
             ],
         ]);
-        return $event;
     }
 
     /**

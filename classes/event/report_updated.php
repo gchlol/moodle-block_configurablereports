@@ -48,25 +48,17 @@ class report_updated extends base {
      * @param context $context
      * @param stdClass $report
      * @param string $change Human-readable change summary
-     * @param string $source UI or API source
      * @return self
      */
-    public static function create_from_report(
-        context $context,
-        stdClass $report,
-        string $change,
-        string $source = 'ui'
-    ): self {
-        $event = self::create([
+    public static function create_from_report(context $context, stdClass $report, string $change): self {
+        return self::create([
             'context' => $context,
             'objectid' => $report->id,
             'other' => [
                 'reportname' => format_string($report->name),
                 'change' => $change,
-                'source' => $source,
             ],
         ]);
-        return $event;
     }
 
     /**

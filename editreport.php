@@ -131,7 +131,8 @@ if ($duplicate && confirm_sesskey()) {
     $newreport = clone $report;
     unset($newreport->id);
     $newreport->name = get_string('copyasnoun') . ' ' . $newreport->name;
-    if (!$newreport->id = $DB->insert_record('block_configurable_reports', $newreport)) {
+    $newreport->id = $DB->insert_record('block_configurable_reports', $newreport);
+    if (!$newreport->id) {
         throw new moodle_exception('cannotduplicate', 'block_configurable_reports');
     }
     \block_configurable_reports\event\report_duplicated::create_from_reports(

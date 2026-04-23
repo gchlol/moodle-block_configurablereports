@@ -111,7 +111,7 @@ final class event_util {
     }
 
     /**
-     * Log tab-level change event (Filters, Permissions).
+     * Log tab-level change event for any report component tab.
      *
      * @param stdClass $report
      * @param string $comp Component/tab name
