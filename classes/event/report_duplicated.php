@@ -38,7 +38,7 @@ class report_duplicated extends base {
      */
     protected function init(): void {
         $this->data['crud'] = 'c';
-        $this->data['edulevel'] = self::LEVEL_TEACHING;
+        $this->data['edulevel'] = static::LEVEL_TEACHING;
         $this->data['objecttable'] = 'block_configurable_reports';
     }
 
@@ -48,10 +48,10 @@ class report_duplicated extends base {
      * @param context $context
      * @param stdClass $newreport New report record (id required)
      * @param stdClass $sourcereport Source report record
-     * @return self
+     * @return static
      */
-    public static function create_from_reports(context $context, stdClass $newreport, stdClass $sourcereport): self {
-        return self::create([
+    public static function create_from_reports(context $context, stdClass $newreport, stdClass $sourcereport): base {
+        return static::create([
             'context' => $context,
             'objectid' => $newreport->id,
             'other' => [

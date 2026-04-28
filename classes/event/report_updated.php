@@ -38,7 +38,7 @@ class report_updated extends base {
      */
     protected function init(): void {
         $this->data['crud'] = 'u';
-        $this->data['edulevel'] = self::LEVEL_TEACHING;
+        $this->data['edulevel'] = static::LEVEL_TEACHING;
         $this->data['objecttable'] = 'block_configurable_reports';
     }
 
@@ -48,10 +48,10 @@ class report_updated extends base {
      * @param context $context
      * @param stdClass $report
      * @param string $change Human-readable change summary
-     * @return self
+     * @return static
      */
-    public static function create_from_report(context $context, stdClass $report, string $change): self {
-        return self::create([
+    public static function create_from_report(context $context, stdClass $report, string $change): base {
+        return static::create([
             'context' => $context,
             'objectid' => $report->id,
             'other' => [

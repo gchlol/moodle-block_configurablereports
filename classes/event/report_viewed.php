@@ -38,7 +38,7 @@ class report_viewed extends base {
      */
     protected function init(): void {
         $this->data['crud'] = 'r';
-        $this->data['edulevel'] = self::LEVEL_PARTICIPATING;
+        $this->data['edulevel'] = static::LEVEL_PARTICIPATING;
         $this->data['objecttable'] = 'block_configurable_reports';
     }
 
@@ -47,10 +47,10 @@ class report_viewed extends base {
      *
      * @param context $context
      * @param stdClass $report
-     * @return self
+     * @return static
      */
-    public static function create_from_report(context $context, stdClass $report): self {
-        return self::create([
+    public static function create_from_report(context $context, stdClass $report): base {
+        return static::create([
             'context' => $context,
             'objectid' => $report->id,
             'other' => [
