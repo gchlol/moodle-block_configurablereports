@@ -77,6 +77,8 @@ foreach ($reportdata as $key => $value) {
 }
 
 $data .= "</report>";
+// GCHLOL: GS-946.
+\block_configurable_reports\event\report_exported::create_from_report($context, $report, 'xml')->trigger();
 
 if (strpos($CFG->wwwroot, 'https://') === 0) {
     // Https sites - watch out for IE! KB812935 and KB316431.

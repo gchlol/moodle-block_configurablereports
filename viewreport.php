@@ -114,6 +114,8 @@ if (!$download) {
 
     // Print the report HTML.
     $reportclass->print_report_page($PAGE);
+    // GCHLOL: GS-946.
+    \block_configurable_reports\event\report_viewed::create_from_report($context, $report)->trigger();
 
 } else {
     // Large exports are likely to take their time and memory.
@@ -122,6 +124,8 @@ if (!$download) {
     $exportplugin = $CFG->dirroot . '/blocks/configurable_reports/export/' . $format . '/export.php';
     if (file_exists($exportplugin)) {
         require_once($exportplugin);
+        // GCHLOL: GS-946. Log before export; exporters may exit after sending the file.
+        \block_configurable_reports\event\report_exported::create_from_report($context, $report, $format)->trigger();
         export_report($reportclass->finalreport);
     }
     die;

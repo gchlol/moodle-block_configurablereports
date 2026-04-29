@@ -83,8 +83,9 @@ if ($importpath) {
         $response = json_decode($rawresponse);
         $xml = base64_decode($response->content);
 
-        if (cr_import_xml($xml, $course)) {
-            // Exit point
+        if ($newreport = cr_import_xml($xml, $course)) {
+            // GCHLOL: GS-946.
+            \block_configurable_reports\event\report_imported::create_from_report($context, $newreport, 'repository')->trigger();
             redirect(
                 new moodle_url(
                     '/blocks/configurable_reports/managereport.php',
@@ -102,7 +103,9 @@ $mform = new import_form(null, $course->id);
 
 if ($data = $mform->get_data()) {
     if ($xml = $mform->get_file_content('userfile')) {
-        if (cr_import_xml($xml, $course)) {
+        if ($newreport = cr_import_xml($xml, $course)) {
+            // GCHLOL: GS-946.
+            \block_configurable_reports\event\report_imported::create_from_report($context, $newreport, 'upload')->trigger();
             redirect(
                 "$CFG->wwwroot/blocks/configurable_reports/managereport.php?courseid={$course->id}",
                 get_string('reportcreated', 'block_configurable_reports')

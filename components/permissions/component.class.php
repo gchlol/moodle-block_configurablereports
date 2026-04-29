@@ -57,6 +57,8 @@ class component_permissions extends component_base {
             // Function cr_serialize() will add slashes.
 
             $components = cr_unserialize($this->config->components);
+            // GCHLOL: GS-946.
+            $oldconditionexpr = $components['permissions']['config']->conditionexpr ?? '';
             $components['permissions']['config'] = $data;
             if (isset($components['permissions']['config']->conditionexpr)) {
                 $components['permissions']['config']->conditionexpr =
@@ -64,6 +66,11 @@ class component_permissions extends component_base {
             }
             $this->config->components = cr_serialize($components);
             $DB->update_record('block_configurable_reports', $this->config);
+            // GCHLOL: GS-946.
+            $newconditionexpr = $components['permissions']['config']->conditionexpr ?? '';
+            if ($newconditionexpr !== $oldconditionexpr) {
+                \block_configurable_reports\local\util\event_util::log_tab_change($this->config, 'permissions');
+            }
         }
     }
 

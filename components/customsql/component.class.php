@@ -63,9 +63,15 @@ class component_customsql extends component_base {
             $data = $cform->get_data();
             // Function cr_serialize() will add slashes.
             $components = cr_unserialize($this->config->components);
+            // GCHLOL: GS-946.
+            $oldsql = $components['customsql']['config']->querysql ?? '';
             $components['customsql']['config'] = $data;
             $this->config->components = cr_serialize($components);
             $DB->update_record('block_configurable_reports', $this->config);
+            // GCHLOL: GS-946.
+            if ($data->querysql !== $oldsql) {
+                \block_configurable_reports\local\util\event_util::log_sql_change($this->config);
+            }
         }
     }
 
