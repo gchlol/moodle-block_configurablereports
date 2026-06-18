@@ -37,9 +37,9 @@ use stdClass;
  */
 class report_run_started extends base {
     /**
-     * Init event data.
+     * Initialises the event metadata for a report run start event.
      *
-     * @return void
+     * @return void Sets the CRUD action, education level, and source table for the event.
      */
     protected function init(): void {
         $this->data['crud'] = 'r';
@@ -48,11 +48,11 @@ class report_run_started extends base {
     }
 
     /**
-     * Build event from a report record.
+     * Creates a report run started event from a report record.
      *
-     * @param context $context
-     * @param stdClass $report
-     * @return static
+     * @param context $context The context where the report is being run.
+     * @param stdClass $report The report record containing the report ID and name.
+     * @return static The created report run started event instance.
      */
     public static function create_from_report(context $context, stdClass $report): base {
         return static::create([
@@ -65,18 +65,18 @@ class report_run_started extends base {
     }
 
     /**
-     * Returns localized event name.
+     * Gets the localised name of the event.
      *
-     * @return string
+     * @return string The localised event name.
      */
     public static function get_name(): string {
         return get_string('event:reportrunstarted', 'block_configurable_reports');
     }
 
     /**
-     * Describes event.
+     * Gets the localised description of the started report run event.
      *
-     * @return string
+     * @return string The localised event description.
      */
     public function get_description(): string {
         $data = new stdClass();
@@ -87,9 +87,10 @@ class report_run_started extends base {
     }
 
     /**
-     * Validate required data.
+     * Validates that the event contains the required report data.
      *
-     * @return void
+     * @return void Validates the event data before the event is triggered.
+     * @throws coding_exception If the report ID or report name is missing from the event data.
      */
     protected function validate_data(): void {
         parent::validate_data();
@@ -102,9 +103,9 @@ class report_run_started extends base {
     }
 
     /**
-     * Returns URL related to event context.
+     * Gets the report URL related to the event.
      *
-     * @return moodle_url
+     * @return moodle_url The URL of the report view page for this event.
      */
     public function get_url(): moodle_url {
         return new moodle_url('/blocks/configurable_reports/viewreport.php', ['id' => $this->objectid]);
