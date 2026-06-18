@@ -30,10 +30,10 @@ use stdClass;
  * crashes the site while running (for example an excessively large report)
  * remains traceable even though it never finishes and shows its output.
  *
- * @package     block_configurable_reports
- * @copyright   2026 Gold Coast Health
- * @author      Yucheng Zhu
- * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package    block_configurable_reports
+ * @copyright  2026 Gold Coast Health
+ * @author     Yucheng Zhu
+ * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class report_run_started extends base {
     /**
