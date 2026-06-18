@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+// GCHLOL: Define the report event that logs execution before the report query starts.
 namespace block_configurable_reports\event;
 
 use coding_exception;
@@ -109,3 +110,4 @@ class report_run_started extends base {
         return new moodle_url('/blocks/configurable_reports/viewreport.php', ['id' => $this->objectid]);
     }
 }
+// GCHLOL ends.

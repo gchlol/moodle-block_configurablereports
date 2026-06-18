@@ -16,7 +16,6 @@
 
 namespace block_configurable_reports\local\util;
 
-use block_configurable_reports\event\report_run_started;
 use block_configurable_reports\event\report_updated;
 use context;
 use context_course;
@@ -32,17 +31,6 @@ use stdClass;
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 final class event_util {
-
-    /**
-     * Log report execution start.
-     *
-     * @param context $context
-     * @param stdClass $report
-     * @return void
-     */
-    public static function log_report_run_started(context $context, stdClass $report): void {
-        report_run_started::create_from_report($context, $report)->trigger();
-    }
 
     /**
      * Log visibility change as report update.

@@ -76,7 +76,9 @@ if ($download && $report->type === "sql") {
     $reportclass->set_forexport(true);
 }
 
-\block_configurable_reports\local\util\event_util::log_report_run_started($context, $report);
+// GCHLOL: Log the report run before executing the report query.
+\block_configurable_reports\event\report_run_started::create_from_report($context, $report)->trigger();
+// GCHLOL ends.
 
 $reportclass->create_report();
 
