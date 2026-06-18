@@ -76,10 +76,7 @@ if ($download && $report->type === "sql") {
     $reportclass->set_forexport(true);
 }
 
-// GCHLOL: GS-1424. Log before the report runs so a report that crashes the site while
-// running (e.g. an excessively large report) is still traceable, even though it never
-// reaches the post-run report_viewed/report_exported log below.
-\block_configurable_reports\event\report_run_started::create_from_report($context, $report)->trigger();
+\block_configurable_reports\local\util\event_util::log_report_run_started($context, $report);
 
 $reportclass->create_report();
 
