@@ -666,6 +666,8 @@ $string['repositorytoken'] = 'GitHub Access Token';
 $string['repositorytokeninfo'] = 'Optional access token to include with each request. This token requires the Contents Read-only permission at a minimum. See <a target="_blank" href="https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens">Personal Access Token Docs</a>.';
 
 // Events.
+$string['event:reportrunstarted'] = 'Report run started';
+$string['event:reportrunstarted:desc'] = 'User with id \'{$a->userid}\' started running report \'{$a->reportname}\' (id {$a->objectid}).';
 $string['event:reportviewed'] = 'Report viewed';
 $string['event:reportexported'] = 'Report exported';
 $string['event:reportcreated'] = 'Report created';
