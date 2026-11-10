@@ -31,6 +31,13 @@
     /*jshint browser:true, jquery:true, unused:false, expr: true */
     ;(function($) {
         'use strict';
+        // jQuery 4 removed $.trim, $.isFunction, $.isArray, .bind and .unbind.
+        var jqTrim = function(str) {
+            return str === null || str === undefined ? '' : String(str).trim();
+        };
+        var isFunction = function(obj) {
+            return typeof obj === 'function';
+        };
         var ts = $.tablesorter = {
 
             version: '2.31.3',
@@ -348,8 +355,8 @@
                 // show processesing icon
                 if (c.showProcessing) {
                     $table
-                        .unbind('sortBegin' + c.namespace + ' sortEnd' + c.namespace)
-                        .bind('sortBegin' + c.namespace + ' sortEnd' + c.namespace, function(e) {
+                        .off('sortBegin' + c.namespace + ' sortEnd' + c.namespace)
+                        .on('sortBegin' + c.namespace + ' sortEnd' + c.namespace, function(e) {
                             clearTimeout(c.timerProcessing);
                             ts.isProcessing(table);
                             if (e.type === 'sortBegin') {
@@ -384,8 +391,8 @@
                         .join(namespace + ' ');
                 // apply easy methods that trigger bound events
                 $table
-                    .unbind(events.replace(ts.regex.spaces, ' '))
-                    .bind('sortReset' + namespace, function(e, callback) {
+                    .off(events.replace(ts.regex.spaces, ' '))
+                    .on('sortReset' + namespace, function(e, callback) {
                         e.stopPropagation();
                         // using this.config to ensure functions are getting a non-cached version of the config
                         ts.sortReset(this.config, function(table) {
@@ -400,67 +407,67 @@
                             }
                         });
                     })
-                    .bind('updateAll' + namespace, function(e, resort, callback) {
+                    .on('updateAll' + namespace, function(e, resort, callback) {
                         e.stopPropagation();
                         ts.updateAll(this.config, resort, callback);
                     })
-                    .bind('update' + namespace + ' updateRows' + namespace, function(e, resort, callback) {
+                    .on('update' + namespace + ' updateRows' + namespace, function(e, resort, callback) {
                         e.stopPropagation();
                         ts.update(this.config, resort, callback);
                     })
-                    .bind('updateHeaders' + namespace, function(e, callback) {
+                    .on('updateHeaders' + namespace, function(e, callback) {
                         e.stopPropagation();
                         ts.updateHeaders(this.config, callback);
                     })
-                    .bind('updateCell' + namespace, function(e, cell, resort, callback) {
+                    .on('updateCell' + namespace, function(e, cell, resort, callback) {
                         e.stopPropagation();
                         ts.updateCell(this.config, cell, resort, callback);
                     })
-                    .bind('addRows' + namespace, function(e, $row, resort, callback) {
+                    .on('addRows' + namespace, function(e, $row, resort, callback) {
                         e.stopPropagation();
                         ts.addRows(this.config, $row, resort, callback);
                     })
-                    .bind('updateComplete' + namespace, function() {
+                    .on('updateComplete' + namespace, function() {
                         this.isUpdating = false;
                     })
-                    .bind('sorton' + namespace, function(e, list, callback, init) {
+                    .on('sorton' + namespace, function(e, list, callback, init) {
                         e.stopPropagation();
                         ts.sortOn(this.config, list, callback, init);
                     })
-                    .bind('appendCache' + namespace, function(e, callback, init) {
+                    .on('appendCache' + namespace, function(e, callback, init) {
                         e.stopPropagation();
                         ts.appendCache(this.config, init);
-                        if ($.isFunction(callback)) {
+                        if (isFunction(callback)) {
                             callback(this);
                         }
                     })
                     // $tbodies variable is used by the tbody sorting widget
-                    .bind('updateCache' + namespace, function(e, callback, $tbodies) {
+                    .on('updateCache' + namespace, function(e, callback, $tbodies) {
                         e.stopPropagation();
                         ts.updateCache(this.config, callback, $tbodies);
                     })
-                    .bind('applyWidgetId' + namespace, function(e, id) {
+                    .on('applyWidgetId' + namespace, function(e, id) {
                         e.stopPropagation();
                         ts.applyWidgetId(this, id);
                     })
-                    .bind('applyWidgets' + namespace, function(e, callback) {
+                    .on('applyWidgets' + namespace, function(e, callback) {
                         e.stopPropagation();
                         // apply widgets (false = not initializing)
                         ts.applyWidget(this, false, callback);
                     })
-                    .bind('refreshWidgets' + namespace, function(e, all, dontapply) {
+                    .on('refreshWidgets' + namespace, function(e, all, dontapply) {
                         e.stopPropagation();
                         ts.refreshWidgets(this, all, dontapply);
                     })
-                    .bind('removeWidget' + namespace, function(e, name, refreshing) {
+                    .on('removeWidget' + namespace, function(e, name, refreshing) {
                         e.stopPropagation();
                         ts.removeWidget(this, name, refreshing);
                     })
-                    .bind('destroy' + namespace, function(e, removeClasses, callback) {
+                    .on('destroy' + namespace, function(e, removeClasses, callback) {
                         e.stopPropagation();
                         ts.destroy(this, removeClasses, callback);
                     })
-                    .bind('resetToLoadState' + namespace, function(e) {
+                    .on('resetToLoadState' + namespace, function(e) {
                         e.stopPropagation();
                         // remove all widgets
                         ts.removeWidget(this, true, false);
@@ -497,8 +504,8 @@
                     // http://stackoverflow.com/questions/5312849/jquery-find-self;
                     .find(c.selectorSort)
                     .add($headers.filter(c.selectorSort))
-                    .unbind(tmp)
-                    .bind(tmp, function(e, external) {
+                    .off(tmp)
+                    .on(tmp, function(e, external) {
                         var $cell, cell, temp,
                             $target = $(e.target),
                             // wrap event type in spaces, so the match doesn't trigger on inner words
@@ -552,7 +559,7 @@
                     // cancel selection
                     $headers
                         .attr('unselectable', 'on')
-                        .bind('selectstart', false)
+                        .on('selectstart', false)
                         .css({
                             'user-select': 'none',
                             'MozUserSelect': 'none' // not needed for jQuery 1.8+
@@ -856,18 +863,18 @@
                     // check data-attribute first when set to 'basic'; don't use node.innerText - it's really slow!
                     // http://www.kellegous.com/j/2013/02/27/innertext-vs-textcontent/
                     if (extract === 'basic' && typeof (tmp = $node.attr(c.textAttribute)) !== 'undefined') {
-                        return $.trim(tmp);
+                        return jqTrim(tmp);
                     }
-                    return $.trim(node.textContent || $node.text());
+                    return jqTrim(node.textContent || $node.text());
                 } else {
                     if (typeof extract === 'function') {
-                        return $.trim(extract($node[0], c.table, cellIndex));
+                        return jqTrim(extract($node[0], c.table, cellIndex));
                     } else if (typeof (tmp = ts.getColumnData(c.table, extract, cellIndex)) === 'function') {
-                        return $.trim(tmp($node[0], c.table, cellIndex));
+                        return jqTrim(tmp($node[0], c.table, cellIndex));
                     }
                 }
                 // fallback
-                return $.trim($node[0].textContent || $node.text());
+                return jqTrim($node[0].textContent || $node.text());
             },
 
             // centralized function to extract/parse cell contents
@@ -1055,7 +1062,7 @@
                         console.groupEnd();
                     }
                 }
-                if ($.isFunction(callback)) {
+                if (isFunction(callback)) {
                     callback(table);
                 }
             },
@@ -1218,7 +1225,7 @@
                         tmp = $header.hasClass(ts.css.sortAsc) ?
                             'sortAsc' :
                             $header.hasClass(ts.css.sortDesc) ? 'sortDesc' : 'sortNone',
-                        txt = $.trim($header.text()) + ': ' + ts.language[tmp];
+                        txt = jqTrim($header.text()) + ': ' + ts.language[tmp];
                     if ($header.hasClass('sorter-false') || nextSort === false) {
                         txt += ts.language.sortDisabled;
                     } else {
@@ -1680,7 +1687,7 @@
                 // save sort before applying sortAppend
                 c.last.sortList = $.extend([], c.sortList);
                 if (c.sortList.length && c.sortAppend) {
-                    arry = $.isArray(c.sortAppend) ? c.sortAppend : c.sortAppend[c.sortList[0][0]];
+                    arry = Array.isArray(c.sortAppend) ? c.sortAppend : c.sortAppend[c.sortList[0][0]];
                     if (!ts.isEmptyObject(arry)) {
                         for (indx = 0; indx < arry.length; indx++) {
                             if (arry[indx][0] !== col && ts.isValueInArray(arry[indx][0], c.sortList) < 0) {
@@ -1814,13 +1821,13 @@
                 if (c.table.isUpdating) {
                     c.$table.triggerHandler('updateComplete', c.table);
                 }
-                if ($.isFunction(callback)) {
+                if (isFunction(callback)) {
                     callback(c.table);
                 }
             },
 
             checkResort: function(c, resort, callback) {
-                var sortList = $.isArray(resort) ? resort : c.sortList,
+                var sortList = Array.isArray(resort) ? resort : c.sortList,
                     // if no resort parameter is passed, fallback to config.resort (true by default)
                     resrt = typeof resort === 'undefined' ? c.resort : resort;
                 // don't try to resort if the table is still processing
@@ -1864,7 +1871,7 @@
                 c.$table.triggerHandler('sortBeforeEnd', table);
                 c.$table.triggerHandler('sortEnd', table);
                 ts.applyWidget(table);
-                if ($.isFunction(callback)) {
+                if (isFunction(callback)) {
                     callback(table);
                 }
             },
@@ -1879,7 +1886,7 @@
                 ts.setHeadersCss(c);
                 ts.multisort(c);
                 ts.appendCache(c);
-                if ($.isFunction(callback)) {
+                if (isFunction(callback)) {
                     callback(c.table);
                 }
             },
@@ -2243,7 +2250,7 @@
                 } else {
                     // name can be either an array of widgets names,
                     // or a space/comma separated list of widget names
-                    name = ($.isArray(name) ? name.join(',') : name || '').toLowerCase().split(/[\s,]+/);
+                    name = (Array.isArray(name) ? name.join(',') : name || '').toLowerCase().split(/[\s,]+/);
                 }
                 len = name.length;
                 for (index = 0; index < len; index++) {
@@ -2357,7 +2364,7 @@
                 }
                 num = parseFloat(str);
                 // return the text instead of zero
-                return isNaN(num) ? $.trim(str) : num;
+                return isNaN(num) ? jqTrim(str) : num;
             },
 
             isDigit: function(str) {
@@ -2500,7 +2507,7 @@
                     // include sorter class name 'sorter-text', etc; now works with 'sorter-my-custom-parser'
                     val = cl4ss.match(new RegExp('\\s' + key + '-([\\w-]+)'))[1] || '';
                 }
-                return $.trim(val);
+                return jqTrim(val);
             },
 
             getColumnData: function(table, obj, indx, getCell, $headers) {
@@ -2682,7 +2689,7 @@
                 }
                 // remove widget added rows, just in case
                 $h.find('tr').not($r).remove();
-                // disable tablesorter - not using .unbind( namespace ) because namespacing was
+                // disable tablesorter - not using .off( namespace ) because namespacing was
                 // added in jQuery v1.4.3 - see http://api.jquery.com/event.namespace/
                 events = 'sortReset update updateRows updateAll updateHeaders updateCell addRows updateComplete sorton ' +
                     'appendCache updateCache applyWidgetId applyWidgets refreshWidgets removeWidget destroy mouseup mouseleave ' +
@@ -2690,7 +2697,7 @@
                         .join(c.namespace + ' ');
                 $t
                     .removeData('tablesorter')
-                    .unbind(events.replace(ts.regex.spaces, ' '));
+                    .off(events.replace(ts.regex.spaces, ' '));
                 c.$headers
                     .add($f)
                     .removeClass([ts.css.header, c.cssHeader, c.cssAsc, c.cssDesc, ts.css.sortAsc, ts.css.sortDesc, ts.css.sortNone].join(' '))
@@ -2699,7 +2706,7 @@
                     .attr('aria-disabled', 'true');
                 $r
                     .find(c.selectorSort)
-                    .unbind(('mousedown mouseup keypress '.split(' ').join(c.namespace + ' ')).replace(ts.regex.spaces, ' '));
+                    .off(('mousedown mouseup keypress '.split(' ').join(c.namespace + ' ')).replace(ts.regex.spaces, ' '));
                 ts.restoreHeaders(table);
                 $t.toggleClass(ts.css.table + ' ' + c.tableClass + ' tablesorter-' + c.theme, removeClasses === false);
                 $t.removeClass(c.namespace.slice(1));
@@ -2765,7 +2772,7 @@
             format: function(str, table) {
                 var c = table.config;
                 if (str) {
-                    str = $.trim(c.ignoreCase ? str.toLocaleLowerCase() : str);
+                    str = jqTrim(c.ignoreCase ? str.toLocaleLowerCase() : str);
                     str = c.sortLocaleCompare ? ts.replaceAccents(str) : str;
                 }
                 return str;
@@ -2782,7 +2789,7 @@
             format: function(str, table) {
                 var num = ts.formatFloat((str || '').replace(ts.regex.nondigit, ''), table);
                 return str && typeof num === 'number' ? num :
-                    str ? $.trim(str && table.config.ignoreCase ? str.toLocaleLowerCase() : str) : str;
+                    str ? jqTrim(str && table.config.ignoreCase ? str.toLocaleLowerCase() : str) : str;
             },
             type: 'numeric'
         });
@@ -2799,7 +2806,7 @@
             format: function(str, table) {
                 var num = ts.formatFloat((str || '').replace(ts.regex.nondigit, ''), table);
                 return str && typeof num === 'number' ? num :
-                    str ? $.trim(str && table.config.ignoreCase ? str.toLocaleLowerCase() : str) : str;
+                    str ? jqTrim(str && table.config.ignoreCase ? str.toLocaleLowerCase() : str) : str;
             },
             type: 'numeric'
         });
@@ -2814,7 +2821,7 @@
                 return ts.regex.urlProtocolTest.test(str);
             },
             format: function(str) {
-                return str ? $.trim(str.replace(ts.regex.urlProtocolReplace, '')) : str;
+                return str ? jqTrim(str.replace(ts.regex.urlProtocolReplace, '')) : str;
             },
             type: 'text'
         });

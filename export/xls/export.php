@@ -62,7 +62,13 @@ function export_report($report) {
 
     foreach ($matrix as $ri => $col) {
         foreach ($col as $ci => $cv) {
-            $myxls->write_string($ri, $ci, $cv);
+            // Numbers go in as numbers so spreadsheets can sum and sort them. Values with leading zeros, or
+            // too many digits for a float to hold exactly (such as ID numbers), stay text.
+            if ($ri > 0 && preg_match('/^-?(0|[1-9]\d{0,14})(\.\d+)?$/', $cv)) {
+                $myxls->write_number($ri, $ci, (float) $cv);
+            } else {
+                $myxls->write_string($ri, $ci, $cv);
+            }
         }
     }
 

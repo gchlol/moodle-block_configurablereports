@@ -162,6 +162,40 @@ final class sql_report_test extends advanced_testcase {
     }
 
     /**
+     * Issue #134: Moodle adds its own LIMIT, so a query that ends in LIMIT used to fail.
+     */
+    public function test_a_query_ending_in_limit_runs(): void {
+        $query = "SELECT u.username FROM {user} u WHERE u.username LIKE 'crtest%' ORDER BY u.username LIMIT 2";
+        $report = new \report_sql($this->create_report($query, []));
+
+        $this->assertTrue($report->create_report());
+        $this->assertSame(['crtest1', 'crtest2'], array_column($report->finalreport->table->data, 0));
+    }
+
+    /**
+     * An OFFSET after the LIMIT is kept.
+     */
+    public function test_a_query_ending_in_limit_and_offset_runs(): void {
+        $query = "SELECT u.username FROM {user} u WHERE u.username LIKE 'crtest%' ORDER BY u.username LIMIT 1 OFFSET 2";
+        $report = new \report_sql($this->create_report($query, []));
+
+        $this->assertTrue($report->create_report());
+        $this->assertSame(['crtest3'], array_column($report->finalreport->table->data, 0));
+    }
+
+    /**
+     * The query cannot ask for more rows than the site's report limit.
+     */
+    public function test_a_query_limit_above_the_report_limit_is_capped(): void {
+        set_config('reportlimit', 2, 'block_configurable_reports');
+        $query = "SELECT u.username FROM {user} u WHERE u.username LIKE 'crtest%' ORDER BY u.username LIMIT 10";
+        $report = new \report_sql($this->create_report($query, []));
+
+        $this->assertTrue($report->create_report());
+        $this->assertSame(['crtest1', 'crtest2'], array_column($report->finalreport->table->data, 0));
+    }
+
+    /**
      * Issue #302: a question mark in a string of the query reached the cleaned report as the placeholder,
      * encoded inside link URLs, so the links were broken.
      */

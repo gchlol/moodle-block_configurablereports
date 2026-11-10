@@ -355,9 +355,24 @@ class report_sql extends report_base {
             $this->reportlimit = 0;
             $results = $DB->execute($sql, $params);
         } else {
-            // Ask for one row more than we will show: if it comes back, the limit cut the result set short.
-            $this->reportlimit = $reportlimit;
-            $results = $DB->get_recordset_sql($sql, $params, 0, $reportlimit + 1);
+            // Moodle adds its own LIMIT, so a query ending in LIMIT n [OFFSET m] would get two of them.
+            // Take the query's limit out and pass it to Moodle instead, never above the report limit.
+            $limitfrom = 0;
+            if (preg_match('/\s+LIMIT\s+(\d+)(?:\s+OFFSET\s+(\d+))?\s*$/i', $sql, $matches)) {
+                $sql = substr($sql, 0, -strlen($matches[0]));
+                $limitfrom = (int) ($matches[2] ?? 0);
+                $querylimit = (int) $matches[1];
+            }
+
+            if (isset($querylimit) && $querylimit <= $reportlimit) {
+                // The query's own limit is what cuts the result set, so nothing is truncated.
+                $this->reportlimit = 0;
+                $results = $DB->get_recordset_sql($sql, $params, $limitfrom, $querylimit);
+            } else {
+                // Ask for one row more than we will show: if it comes back, the limit cut the result set short.
+                $this->reportlimit = $reportlimit;
+                $results = $DB->get_recordset_sql($sql, $params, $limitfrom, $reportlimit + 1);
+            }
         }
 
         // Update the execution time in the DB.

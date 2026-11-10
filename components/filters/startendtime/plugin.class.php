@@ -100,24 +100,25 @@ class plugin_startendtime extends filter_base {
 
         $params = [];
 
-        if (preg_match("/%%FILTER_STARTTIME:([^%]+)%%/i", $sql, $output)) {
-            [$field, $operator] = array_pad(preg_split('/:/', $output[1]), 2, '');
-            if (!in_array($operator, $operators)) {
-                throw new moodle_exception('nosuchoperator');
-            }
-            $replace = ' AND ' . $field . ' ' . $operator . ' :filterstarttime';
-            $sql = str_replace('%%FILTER_STARTTIME:' . $output[1] . '%%', $replace, $sql);
-            $params['filterstarttime'] = $filterstarttime;
-        }
-
-        if (preg_match("/%%FILTER_ENDTIME:([^%]+)%%/i", $sql, $output)) {
-            [$field, $operator] = array_pad(preg_split('/:/', $output[1]), 2, '');
-            if (!in_array($operator, $operators)) {
-                throw new moodle_exception('nosuchoperator');
-            }
-            $replace = ' AND ' . $field . ' ' . $operator . ' :filterendtime';
-            $sql = str_replace('%%FILTER_ENDTIME:' . $output[1] . '%%', $replace, $sql);
-            $params['filterendtime'] = $filterendtime;
+        // Every placeholder gets its own parameter, so a query can use each one more than once.
+        $placeholders = ['STARTTIME' => $filterstarttime, 'ENDTIME' => $filterendtime];
+        foreach ($placeholders as $name => $value) {
+            $count = 0;
+            $sql = preg_replace_callback(
+                '/%%FILTER_' . $name . ':([^%]+)%%/i',
+                function (array $output) use ($name, $value, $operators, &$params, &$count): string {
+                    [$field, $operator] = array_pad(preg_split('/:/', $output[1]), 2, '');
+                    if (!in_array($operator, $operators)) {
+                        throw new moodle_exception('nosuchoperator');
+                    }
+                    // The first one keeps the old name, in case anything relies on it.
+                    $paramname = 'filter' . strtolower($name) . ($count ? $count : '');
+                    $count++;
+                    $params[$paramname] = $value;
+                    return ' AND ' . $field . ' ' . $operator . ' :' . $paramname;
+                },
+                $sql
+            );
         }
 
         $sql = str_replace('%%STARTTIME%%', $filterstarttime, $sql);

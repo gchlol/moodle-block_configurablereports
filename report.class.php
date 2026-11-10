@@ -392,32 +392,27 @@ abstract class report_base {
     public function print_export_options(bool $return = false) {
         global $CFG;
 
-        $wwwpath = $CFG->wwwroot;
-
         // TODO move to more Moodle approach.
         $request = array_merge($_POST, $_GET);
+        unset($request['download'], $request['format']);
 
-        if ($request) {
-            $id = clean_param($request['id'], PARAM_INT);
-            $wwwpath = 'viewreport.php?id=' . $id;
-            unset($request['id']);
-
-            foreach ($request as $key => $val) {
-
-                $key = s(clean_param($key, PARAM_CLEANHTML));
-
-                if (is_array($val)) {
-                    foreach ($val as $k => $v) {
-                        $k = s(clean_param($k, PARAM_CLEANHTML));
-                        $v = s(clean_param($v, PARAM_CLEANHTML));
-                        $wwwpath .= "&{$key}[$k]=" . $v;
-                    }
-                } else {
-                    $val = clean_param($val, PARAM_CLEANHTML);
-                    $wwwpath .= "&$key=" . s($val);
+        // Keys and values are URL-encoded, otherwise a "+" in a filter value (base64 user fields) turns into a space.
+        // moodle_url only takes array parameters from Moodle 4.3, so the query string is built here.
+        $id = isset($request['id']) ? clean_param($request['id'], PARAM_INT) : $this->config->id;
+        unset($request['id']);
+        $query = ['id=' . $id];
+        foreach ($request as $key => $val) {
+            $key = rawurlencode(clean_param($key, PARAM_CLEANHTML));
+            if (is_array($val)) {
+                foreach ($val as $k => $v) {
+                    $query[] = $key . '[' . rawurlencode(clean_param($k, PARAM_CLEANHTML)) . ']=' .
+                        rawurlencode(clean_param($v, PARAM_CLEANHTML));
                 }
+            } else {
+                $query[] = $key . '=' . rawurlencode(clean_param($val, PARAM_CLEANHTML));
             }
         }
+        $wwwpath = $CFG->wwwroot . '/blocks/configurable_reports/viewreport.php?' . implode('&', $query);
 
         $output = '';
         $export = explode(',', $this->config->export);
@@ -432,8 +427,7 @@ abstract class report_base {
                     continue;
                 }
 
-                // TODO Use moodle_url.
-                $output .= '<a href="' . s($wwwpath) . '&download=1&format=' . s($e) . '">
+                $output .= '<a href="' . s($wwwpath . '&download=1&format=' . rawurlencode($e)) . '">
                                     <img src="' . $CFG->wwwroot . '/blocks/configurable_reports/export/' . s($e) . '/pix.gif"
                                      alt="' . s($e) . '">
                                     &nbsp;' . (s(strtoupper($e))) .

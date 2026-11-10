@@ -339,7 +339,6 @@ $string['stat'] = 'Statistic';
 $string['statslogins'] = 'Logins in the platform';
 $string['activityview'] = 'Activity views';
 $string['activitypost'] = 'Activity posts';
-$string[''] = '';
 $string['globalstatsshouldbeenabled'] = 'Site statistics must be enabled. Go to Admin -> Server -> Statistics';
 
 $string['xaxis'] = 'X Axis';

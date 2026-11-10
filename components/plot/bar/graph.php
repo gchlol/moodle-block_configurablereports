@@ -187,8 +187,6 @@ if (!empty($graphs)) {
 
         $mypicture->setShadow(false);
         $mypicture->drawLegend($legendx, $legendy);
-        $mypicture->stroke();
-
         $mypicture->autoOutput();
     }
 }

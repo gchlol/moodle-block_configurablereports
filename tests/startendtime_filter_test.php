@@ -83,6 +83,26 @@ final class startendtime_filter_test extends advanced_testcase {
     }
 
     /**
+     * Issue #205: every placeholder is replaced, each one with its own parameter.
+     */
+    public function test_each_placeholder_is_replaced(): void {
+        [$sql, $params] = $this->filter->execute_for_sql_report(
+            'SELECT id FROM {user} WHERE 1 = 1 %%FILTER_STARTTIME:timecreated:>=%% %%FILTER_ENDTIME:timecreated:<=%%' .
+            ' %%FILTER_STARTTIME:timemodified:>=%% %%FILTER_ENDTIME:timemodified:<=%%'
+        );
+
+        $this->assertStringNotContainsString('%%', $sql);
+        $this->assertStringContainsString('timecreated >= :filterstarttime ', $sql);
+        $this->assertStringContainsString('timemodified >= :filterstarttime1', $sql);
+        $this->assertStringContainsString('timecreated <= :filterendtime ', $sql);
+        $this->assertStringContainsString('timemodified <= :filterendtime1', $sql);
+        $this->assertEqualsCanonicalizing(
+            ['filterstarttime', 'filterstarttime1', 'filterendtime', 'filterendtime1'],
+            array_keys($params)
+        );
+    }
+
+    /**
      * Issue #207 reported this for the user field filter, where it is fixed: splitting a placeholder
      * that carries no operator leaves nothing at the second offset, and reading it raises a warning
      * before the filter gets as far as refusing the operator. The report author sees the warning,
