@@ -79,6 +79,11 @@ $download = $download && $format && strpos($report->export, $format . ',') !== f
 if ($download && $report->type === "sql") {
     $reportclass->set_forexport(true);
 }
+
+// GCHLOL: Log the report run before executing the report query.
+\block_configurable_reports\event\report_run_started::create_from_report($context, $report)->trigger();
+// GCHLOL ends.
+
 $reportclass->create_report();
 
 if ($download) {
